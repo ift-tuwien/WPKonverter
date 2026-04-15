@@ -7,6 +7,8 @@ from csv import DictReader
 from re import split
 from typing import NamedTuple
 
+from openpyxl import Workbook
+
 from wpkonverter.cli import file_exists
 
 # -- Types --------------------------------------------------------------------
@@ -58,6 +60,27 @@ def parse_name(text: str) -> Parsed[str]:
     return name, remainder
 
 
+def store_data_workbook(data: list[RegistrationData]) -> None:
+    """Store registration data in Excel file
+
+    Args:
+
+        data:
+
+            The registration data that should be stored in the Excel file
+
+    """
+
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.append(["Name"])
+
+    for record in data:
+        worksheet.append([record.name])
+
+    workbook.save("wpk.xlsx")
+
+
 # -- Classes ------------------------------------------------------------------
 
 
@@ -88,3 +111,5 @@ def main():
     print("Parsed Data:\n")
     for record in parsed_data:
         print(record)
+
+    store_data_workbook(parsed_data)
