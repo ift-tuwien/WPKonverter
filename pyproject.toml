@@ -1,0 +1,72 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+authors = [
+    {name = "René Schwaiger", email = "rene.schwaiger@ift.at"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Natural Language :: English",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
+    "Programming Language :: Python",
+]
+
+description = """Extract information from WPK (Wiener \
+                 Produktionstechnik-Kongress) mails and convert it into an
+                 Excel file"""
+keywords = [
+    "ift",
+    "wpk",
+]
+name = "wpkonverter"
+readme = "readme.md"
+requires-python = ">=3.12,<4"
+version = "0.0.1"
+
+[project.optional-dependencies]
+dev = [
+    "Flake8-pyproject>=1.2.3",
+    "mypy",
+    "pylint>=3.3.1",
+]
+
+[project.scripts]
+wpkonverter = "wpkonverter.scripts.converter:main"
+
+[project.urls]
+Source = "https://github.com/ift-tuwien/WPKonverter/"
+
+[tool.black]
+line-length = 79
+preview = true
+unstable = true
+enable-unstable-feature = ["string_processing"]
+
+[tool.flake8]
+
+ignore = [
+  # Whitespace before colon
+  "E203",
+  # Module level import not at top of file
+  "E402",
+  # Line break before binary operator
+  "W503",
+  # Line break after binary operator
+  "W504"
+]
+per-file-ignores = "__init__.py:F401"
+exclude = [
+  ".git",
+  ".venv",
+  "__pycache__",
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.pylint]
+ignore-paths = [ ".venv/.*$" ]
