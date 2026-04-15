@@ -5,7 +5,6 @@
 from argparse import ArgumentParser, Namespace
 from csv import DictReader
 from re import split
-from typing import NamedTuple
 
 from openpyxl import Workbook
 
@@ -60,6 +59,30 @@ def parse_name(text: str) -> Parsed[str]:
     return name, remainder
 
 
+def parse_organization(text: str) -> Parsed[str]:
+    """Parse organization/university
+
+    Args:
+
+        text:
+
+            The input that should be parsed
+
+    Returns:
+
+        A tuple containing the organization name and the remainder of the
+        input text
+
+    """
+
+    _, remainder = split(
+        r"Unternehmen/\s*Bildungsinstitut:\s*", text, maxsplit=1
+    )
+    organization, remainder = split(r"\r?\n", remainder, maxsplit=1)
+
+    return organization, remainder
+
+
 def store_data_workbook(data: list[RegistrationData]) -> None:
     """Store registration data in Excel file
 
@@ -73,21 +96,71 @@ def store_data_workbook(data: list[RegistrationData]) -> None:
 
     workbook = Workbook()
     worksheet = workbook.active
-    worksheet.append(["Name"])
+    worksheet.append(RegistrationData.attribute_names())
 
     for record in data:
-        worksheet.append([record.name])
+        worksheet.append(record.values())
 
-    workbook.save("wpk.xlsx")
+    filename = "wpk.xlsx"
+    workbook.save(filename)
+    print(f"Stored data in “{filename}”")
 
 
 # -- Classes ------------------------------------------------------------------
 
 
-class RegistrationData(NamedTuple):
+class RegistrationData:
     """Store parsed registration data"""
 
-    name: str
+    attributes = {
+        "name": "Participant",
+        "organization": "Organization",
+    }
+
+    def __init__(self, name: str, organization: str):
+        self.name = name
+        self.organization = organization
+
+    @classmethod
+    def attribute_names(cls) -> list[str]:
+        """Get a string representation of the attributes
+
+        Returns:
+
+            A list of human readable name for the stored attributes
+
+        """
+
+        return list(cls.attributes.values())
+
+    def values(self) -> list:
+        """Get a list of all registration values
+
+        Returns:
+
+            All values of the registration data
+
+        """
+
+        cls = type(self)
+
+        return [getattr(self, attribute) for attribute in cls.attributes]
+
+    def __repr__(self) -> str:
+        """Get the string representation of the registration data
+
+        Returns:
+
+            A text containing the registration attributes and their values
+
+        """
+
+        cls = type(self)
+
+        return ", ".join([
+            f"{attribute}: {getattr(self, attribute)}"
+            for attribute in cls.attributes
+        ])
 
 
 # -- Main ---------------------------------------------------------------------
@@ -105,8 +178,11 @@ def main():
             text = row["Text"]
             print(text)
             print("—" * 50)
-            name, _ = parse_name(text)
-            parsed_data.append(RegistrationData(name=name))
+            name, remainder = parse_name(text)
+            organization, remainder = parse_organization(remainder)
+            parsed_data.append(
+                RegistrationData(name=name, organization=organization)
+            )
 
     print("Parsed Data:\n")
     for record in parsed_data:
