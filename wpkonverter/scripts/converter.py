@@ -1,3 +1,5 @@
+"""Convert WPK mail registration data"""
+
 # -- Import -------------------------------------------------------------------
 
 from argparse import ArgumentParser, Namespace
