@@ -6,6 +6,8 @@ set windows-shell := ["pwsh.exe", "-NoLogo", "-Command"]
 # -- Variables -----------------------------------------------------------------
 
 package := "wpkonverter"
+command := package
+input := "wpk.csv"
 
 # -- Recipes -------------------------------------------------------------------
 
@@ -21,3 +23,8 @@ check: setup
 	uv run mypy "{{package}}"
 	uv run flake8
 	uv run pylint .
+
+# Execute script on sample data
+[group('run')]
+run: check
+	uv run "{{command}}" "{{input}}"
