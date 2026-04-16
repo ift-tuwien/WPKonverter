@@ -26,5 +26,6 @@ check: setup
 
 # Execute script on sample data
 [group('run')]
+[default]
 run: check
 	uv run "{{command}}" "{{input}}"
