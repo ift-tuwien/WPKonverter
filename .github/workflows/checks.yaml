@@ -1,0 +1,44 @@
+name: Check Code
+
+on:
+  - push
+
+jobs:
+  os-python-matrix:
+    strategy:
+      matrix:
+        os:
+          - name: macos
+            icon: 🍏
+          - name: ubuntu
+            icon: 🐧
+          - name: windows
+            icon: 🪟
+        python-version:
+          - '3.12'
+          - '3.13'
+          - '3.14'
+
+    runs-on: ${{ matrix.os.name }}-latest
+    name: ${{ matrix.os.icon }} Python ${{ matrix.python-version }}
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57 # v8.0.0
+      with:
+        python-version: ${{ matrix.python-version }}
+        # Using the default value `auto` fails, probably since the package
+        # has no external dependencies.
+        enable-cache: false
+
+    - name: Install just
+      uses: taiki-e/install-action@just
