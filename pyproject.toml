@@ -17,9 +17,7 @@ classifiers = [
 dependencies = [
     "openpyxl>=3.1.5",
 ]
-description = """Extract information from WPK (Wiener \
-                 Produktionstechnik-Kongress) mails and convert it into an
-                 Excel file"""
+description = """Extract information from WPK mails"""
 keywords = [
     "ift",
     "wpk",
