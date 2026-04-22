@@ -4,6 +4,15 @@
 
   **Note:** When you install the software, please do not forget to enable the checkbox **“Add Python to PATH”** in the setup window of the installer.
 
+# Installation
+
+1. Open Microsoft Terminal
+2. Install the package with pip
+
+   ```sh
+   pip install wpkonverter
+   ```
+
 # Usage
 
 ## Preparation
