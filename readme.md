@@ -37,10 +37,10 @@
 ## Conversion
 
 1. Open “Windows Terminal”
-2. Execute the following command
+2. Execute the following command:
 
    ```sh
-   wpkonverter ~/Donwloads/WKP.CSV
+   wpkonverter ~/Downloads/WKP.CSV
    ```
 
-   Note: The command above assumes that you stored the CSV file from Outlook in a file called `WPK.CSV` in the `Downloads` folder of the current user
+   **Note:** The command above assumes that you stored the CSV file from Outlook in a file called `WPK.CSV` in the `Downloads` folder of the current user

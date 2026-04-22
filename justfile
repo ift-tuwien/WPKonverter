@@ -7,7 +7,7 @@ set windows-shell := ["pwsh.exe", "-NoLogo", "-Command"]
 
 package := "wpkonverter"
 command := package
-input := "wpk.csv"
+input := "WPK.CSV"
 
 # -- Recipes -------------------------------------------------------------------
 
