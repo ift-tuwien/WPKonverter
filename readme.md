@@ -27,31 +27,31 @@ A script to convert registration data for the “Wiener Produktionstechnik-Kongr
 4. Click on “Öffnen und Exportieren”
 5. Click on “Importieren/Exportieren”
 
-   ![Importieren/Exportieren](doc/pictures/export.webp)
+   ![Importieren/Exportieren](https://github.com/ift-tuwien/WPKonverter/raw/main/doc/pictures/export.webp)
 
 6. Click on “In Datei exportieren” and “Weiter”
 
-   ![In Datei exportieren](doc/pictures/export-to-file.webp)
+   ![In Datei exportieren](https://github.com/ift-tuwien/WPKonverter/raw/main/doc/pictures/export-to-file.webp)
 
 7. Click on “Durch Trennzeichen getrennte Werte” and “Weiter”
 
-   ![Durch Trennzeichen getrennte Werte](doc/pictures/separated-values.webp)
+   ![Durch Trennzeichen getrennte Werte](https://github.com/ift-tuwien/WPKonverter/raw/main/doc/pictures/separated-values.webp)
 
 8. Click on “Durch Trennzeichen getrennte Werte” and “Weiter”
 
-   ![Durch Trennzeichen getrennte Werte](doc/pictures/separated-values.webp)
+   ![Durch Trennzeichen getrennte Werte](https://github.com/ift-tuwien/WPKonverter/raw/main/doc/pictures/separated-values.webp)
 
 9. Select the folder from step 2 (e.g. “WPK”) and click on “Weiter”
 
-   ![Folder Selection](doc/pictures/folder-selection.webp)
+   ![Folder Selection](https://github.com/ift-tuwien/WPKonverter/raw/main/doc/pictures/folder-selection.webp)
 
 10. Choose the folder (e.g. `Downloads`) and the filename (e.g. `WPK.CSV`) for the exported file and click on “Weiter”
 
-    ![Save Dialog](doc/pictures/save.webp)
+    ![Save Dialog](https://github.com/ift-tuwien/WPKonverter/raw/main/doc/pictures/save.webp)
 
 11. Click on “Fertig stellen” to store the file
 
-    ![Fertig stellen](doc/pictures/done.webp)
+    ![Fertig stellen](https://github.com/ift-tuwien/WPKonverter/raw/main/doc/pictures/done.webp)
 
 ### Conversion
 
