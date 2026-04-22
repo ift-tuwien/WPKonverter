@@ -66,6 +66,14 @@ A script to convert registration data for the “Wiener Produktionstechnik-Kongr
 
 ## Development
 
+While not strictly required we assume that you installed:
+
+- [`gh`](https://cli.github.com),
+- [`just`](https://github.com/casey/just) and
+- [`uv`](https://docs.astral.sh/uv)
+
+in the description below.
+
 ### Release
 
 **Note:** Please replace `<VERSION>` with the version number e.g. `0.0.1` in the text below
