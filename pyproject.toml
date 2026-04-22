@@ -27,7 +27,7 @@ keywords = [
 name = "wpkonverter"
 readme = "readme.md"
 requires-python = ">=3.12,<4"
-version = "0.0.1"
+version = "0.0.1b1"
 
 [project.optional-dependencies]
 dev = [
