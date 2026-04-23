@@ -3,28 +3,27 @@
 # -- Imports ------------------------------------------------------------------
 
 from pyparsing import (
-    alphas,
-    Group,
+    Combine,
     LineEnd,
     Literal,
-    nums,
     OneOrMore,
-    ParserElement,
+    Regex,
     Suppress,
-    Word,
 )
 
 # -- Grammar ------------------------------------------------------------------
 
-ParserElement.set_default_whitespace_chars(" \t")
-
 newline = Suppress(LineEnd())
-text = OneOrMore(Word(alphas + nums + " \t")).set_whitespace_chars("")
+char = Regex(r"[\s\S]")
 
-von = Suppress(Literal("Von:"))
-from_ = von + Group(text) + newline
-subject = Suppress(Literal("Betreff:"))
-mail = from_ + subject
+subject_start = Suppress(Literal("Betreff:"))
+
+text_from = Combine(OneOrMore(~subject_start + char))
+from_start = Suppress(Literal("Von:"))
+
+from_ = from_start + text_from
+
+mail = from_
 
 # -- Functions ----------------------------------------------------------------
 
