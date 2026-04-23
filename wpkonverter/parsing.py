@@ -14,7 +14,6 @@ from pyparsing import (
 
 # -- Grammar ------------------------------------------------------------------
 
-newline = Suppress(LineEnd())
 char = Regex(r"[\s\S]")
 rstrip = lambda tokens: tokens[0].rstrip()
 
