@@ -4,16 +4,12 @@
 
 from argparse import ArgumentParser, Namespace
 from csv import DictReader
-from re import split
 
 from openpyxl import Workbook
+from pyparsing import ParseException, ParseResults
 
 from wpkonverter.cli import file_exists
-
-# -- Types --------------------------------------------------------------------
-
-type Remainder = str
-type Parsed[T] = tuple[T, Remainder]
+from wpkonverter.parsing import mail, mail_attributes
 
 # -- Functions ----------------------------------------------------------------
 
@@ -39,51 +35,7 @@ def get_arguments() -> Namespace:
     return parser.parse_args()
 
 
-def parse_name(text: str) -> Parsed[str]:
-    """Parse participation name
-
-    Args:
-
-        text:
-
-            The input that should be parsed
-
-    Returns:
-
-        A tuple containing the name and the remainder of the input text
-
-    """
-
-    _, remainder = split(r"Teilnehmerin/Teilnehmer:\s*", text, maxsplit=1)
-    name, remainder = split(r"\r?\n", remainder, maxsplit=1)
-    return name, remainder
-
-
-def parse_organization(text: str) -> Parsed[str]:
-    """Parse organization/university
-
-    Args:
-
-        text:
-
-            The input that should be parsed
-
-    Returns:
-
-        A tuple containing the organization name and the remainder of the
-        input text
-
-    """
-
-    _, remainder = split(
-        r"Unternehmen/\s*Bildungsinstitut:\s*", text, maxsplit=1
-    )
-    organization, remainder = split(r"\r?\n", remainder, maxsplit=1)
-
-    return organization, remainder
-
-
-def store_data_workbook(data: list[RegistrationData]) -> None:
+def store_data_workbook(parsed_mails: list[ParseResults]) -> None:
     """Store registration data in Excel file
 
     Args:
@@ -96,96 +48,43 @@ def store_data_workbook(data: list[RegistrationData]) -> None:
 
     workbook = Workbook()
     worksheet = workbook.active
-    worksheet.append(RegistrationData.attribute_names())
 
-    for record in data:
-        worksheet.append(record.values())
+    worksheet.append([attribute.capitalize() for attribute in mail_attributes])
+
+    for parsed_mail in parsed_mails:
+        worksheet.append(
+            [parsed_mail[attribute] for attribute in mail_attributes]
+        )
 
     filename = "wpk.xlsx"
     workbook.save(filename)
     print(f"Stored data in “{filename}”")
 
 
-# -- Classes ------------------------------------------------------------------
-
-
-class RegistrationData:
-    """Store parsed registration data"""
-
-    attributes = {
-        "name": "Participant",
-        "organization": "Organization",
-    }
-
-    def __init__(self, name: str, organization: str):
-        self.name = name
-        self.organization = organization
-
-    @classmethod
-    def attribute_names(cls) -> list[str]:
-        """Get a string representation of the attributes
-
-        Returns:
-
-            A list of human readable name for the stored attributes
-
-        """
-
-        return list(cls.attributes.values())
-
-    def values(self) -> list:
-        """Get a list of all registration values
-
-        Returns:
-
-            All values of the registration data
-
-        """
-
-        cls = type(self)
-
-        return [getattr(self, attribute) for attribute in cls.attributes]
-
-    def __repr__(self) -> str:
-        """Get the string representation of the registration data
-
-        Returns:
-
-            A text containing the registration attributes and their values
-
-        """
-
-        cls = type(self)
-
-        return ", ".join([
-            f"{attribute}: {getattr(self, attribute)}"
-            for attribute in cls.attributes
-        ])
-
-
 # -- Main ---------------------------------------------------------------------
 
 
-def main():
+def main() -> None:
     """Convert WPK mail registration data"""
 
     filepath = get_arguments().filepath
 
     with open(filepath, newline="", encoding="utf8") as csvfile:
         reader = DictReader(csvfile)
-        parsed_data = []
+        parsed_mails: list[ParseResults] = []
         for row in reader:
             text = row["Text"]
             print(text)
             print("—" * 50)
-            name, remainder = parse_name(text)
-            organization, remainder = parse_organization(remainder)
-            parsed_data.append(
-                RegistrationData(name=name, organization=organization)
-            )
+            try:
+                parsed_mail = mail.parse_string(text)
+                parsed_mails.append(parsed_mail)
 
-    print("Parsed Data:\n")
-    for record in parsed_data:
-        print(record)
+                print("Parsed Data:\n")
+                for attribute in mail_attributes:
+                    print(f"{attribute}: {parsed_mail[attribute]}")
+                    print("—")
+            except ParseException:
+                print("Unable to parse data\n")
 
-    store_data_workbook(parsed_data)
+        store_data_workbook(parsed_mails)

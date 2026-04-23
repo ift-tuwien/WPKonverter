@@ -20,6 +20,12 @@ def rstrip(tokens):
     return tokens[0].rstrip()
 
 
+def strip(tokens):
+    """Remove leading and trailing whitespace from input"""
+
+    return tokens[0].strip()
+
+
 char = Regex(r"[\s\S]")
 
 from_start = Suppress(Literal("Von:"))
@@ -31,10 +37,14 @@ sponsor_start = Suppress(
     Literal("Sind Sie daran interessiert, Sponsor oder Redner zu werden?:")
 )
 message_start = Suppress(Literal("Nachricht:"))
-end = Suppress(Literal("""--
-This is a notification that a contact form was submitted on your website \
-(Wiener Produktionstechnik-Kongress https://wpk.conf.tuwien.ac.at).
-"""))
+end = Suppress(Literal("--"))
+end_mail = Suppress(
+    Literal(
+        "This is a notification that a contact form was submitted on your"
+        " website (Wiener Produktionstechnik-Kongress"
+        " https://wpk.conf.tuwien.ac.at)."
+    )
+)
 
 
 # ========
@@ -93,7 +103,9 @@ sponsor = sponsor_start + text_sponsor("sponsor")
 # = Message =
 # ===========
 
-text_message = Combine(OneOrMore(~end + char)).set_parse_action(rstrip)
+text_message = Combine(
+    OneOrMore(~end + char).set_whitespace_chars(" \t")
+).set_parse_action(strip)
 message = message_start + text_message("message")
 
 mail = (
@@ -105,58 +117,14 @@ mail = (
     + sponsor
     + message
     + end
+    + end_mail
     + StringEnd()
 )
-
-# -- Functions ----------------------------------------------------------------
-
-
-def main() -> None:
-    """Parse example pre-registration mail"""
-
-    text = """\
-Von: Website WPK24
-Betreff: Vorregistrierung für WPK2026
-
-Teilnehmerin/Teilnehmer: Thomas Trautner
-Unternehmen/ Bildungsinstitut: TU Wien, Institut für Fertigungstechnik
-Kontakt:
-trautner@ift.at
-
-
-Sind Sie daran interessiert, Sponsor oder Redner zu werden?: nein
-
-
-Nachricht:
-Ich freue mich auf die Teilnahme.
-
---
-This is a notification that a contact form was submitted on your website \
-(Wiener Produktionstechnik-Kongress https://wpk.conf.tuwien.ac.at).
-    """
-
-    print("—" * 20)
-    print(text)
-    print("—" * 20)
-
-    result = mail.parse_string(text)
-    print("Parsing Result:\n")
-    print("—")
-    for key in (
-        "subject",
-        "participant",
-        "organization",
-        "contact",
-        "sponsor",
-        "message",
-    ):
-        print(f"{key}: {result[key]}")
-        print("—")
-
-    print(result["subject"])
-
-
-# -- Main ---------------------------------------------------------------------
-
-if __name__ == "__main__":
-    main()
+mail_attributes = [
+    "subject",
+    "participant",
+    "organization",
+    "contact",
+    "sponsor",
+    "message",
+]
