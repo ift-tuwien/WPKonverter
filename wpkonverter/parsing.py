@@ -70,7 +70,10 @@ This is a notification that a contact form was submitted on your website \
 
     result = mail.parse_string(text)
     print("Parsing Result:\n")
-    print(result)
+    print("—")
+    for part in result:
+        print(part)
+        print("—")
 
 
 # -- Main ---------------------------------------------------------------------
