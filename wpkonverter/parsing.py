@@ -22,17 +22,17 @@ subject_start = Suppress(Literal("Betreff:"))
 participant_start = Suppress(Literal("Teilnehmerin/Teilnehmer:"))
 organization_start = Suppress(Literal("Unternehmen/ Bildungsinstitut:"))
 
-text_from = Combine(OneOrMore(~subject_start + char)).setParseAction(rstrip)
+text_from = Combine(OneOrMore(~subject_start + char)).set_parse_action(rstrip)
 from_ = from_start + text_from
 
-text_subject = Combine(OneOrMore(~participant_start + char)).setParseAction(
+text_subject = Combine(OneOrMore(~participant_start + char)).set_parse_action(
     rstrip
 )
 subject = subject_start + text_subject
 
 text_participant = Combine(
     OneOrMore(~organization_start + char)
-).setParseAction(rstrip)
+).set_parse_action(rstrip)
 participant = participant_start + text_participant
 
 mail = from_ + subject + participant
