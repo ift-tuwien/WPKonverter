@@ -1,0 +1,52 @@
+letter = "A" | "B" | "C" | "D" | "E" | "F" | "G"
+       | "H" | "I" | "J" | "K" | "L" | "M" | "N"
+       | "O" | "P" | "Q" | "R" | "S" | "T" | "U"
+       | "V" | "W" | "X" | "Y" | "Z" | "a" | "b"
+       | "c" | "d" | "e" | "f" | "g" | "h" | "i"
+       | "j" | "k" | "l" | "m" | "n" | "o" | "p"
+       | "q" | "r" | "s" | "t" | "u" | "v" | "w"
+       | "x" | "y" | "z" ;
+
+digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+
+symbol = "[" | "]" | "{" | "}" | "(" | ")" | "<" | ">"
+       | "'" | '"' | "=" | "|" | "." | "," | ";" | "-"
+       | "+" | "*" | "?" | "\t" ;
+
+character = letter | digit | symbol | "_" | " " ;
+
+words = { character } ;
+newline = ["\r"] "\n" ;
+pre-registration = from, subject, participant, position, contact, sponsor,
+                   message, footer;
+
+from = 'Von:', words, newline;
+subject = 'Betreff:', words, newline, newline;
+organization = 'Unternehmen/ Bildungsinstitut:', words, newline;
+position =  'Position:' words, newline;
+contact = 'Kontakt:', newline, { words, newline };
+sponsor = 'Sind Sie daran interessiert, Sponsor oder Redner zu werden?:', words;
+message = { words, newline };
+footer = '--
+This is a notification that a contact form was submitted on your website (Wiener Produktionstechnik-Kongress https://wpk.conf.tuwien.ac.at).'
+
+(*
+
+Von: Website WPK24
+Betreff: TeilnehmerIn Anmeldung WPK24
+
+Teilnehmerin/Teilnehmer: Martin Leonhartsberger
+Unternehmen/ Bildungsinstitut: Welser Profile
+Position: Entwickler Mechatronik
+Kontakt:
+ma.leonhartsberger@welser.com
+
+
+Sind Sie daran interessiert, Sponsor oder Redner zu werden?: nein
+[vor-name-begleitperson] [nach-name-begleitperson]
+
+Nachricht:
+
+--
+This is a notification that a contact form was submitted on your website (Wiener Produktionstechnik-Kongress https://wpk.conf.tuwien.ac.at).
+ *)
