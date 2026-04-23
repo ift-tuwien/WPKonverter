@@ -2,11 +2,29 @@
 
 # -- Imports ------------------------------------------------------------------
 
-from pyparsing import alphas, nums, Literal, OneOrMore, Word
+from pyparsing import (
+    alphas,
+    Group,
+    LineEnd,
+    Literal,
+    nums,
+    OneOrMore,
+    ParserElement,
+    Suppress,
+    Word,
+)
 
 # -- Grammar ------------------------------------------------------------------
 
-mail = Literal("Von:") + OneOrMore(Word(alphas + nums))
+ParserElement.set_default_whitespace_chars(" \t")
+
+newline = Suppress(LineEnd())
+text = OneOrMore(Word(alphas + nums + " \t")).set_whitespace_chars("")
+
+von = Suppress(Literal("Von:"))
+from_ = von + Group(text) + newline
+subject = Suppress(Literal("Betreff:"))
+mail = from_ + subject
 
 # -- Functions ----------------------------------------------------------------
 
