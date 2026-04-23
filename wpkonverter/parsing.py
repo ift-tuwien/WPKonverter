@@ -20,6 +20,7 @@ rstrip = lambda tokens: tokens[0].rstrip()
 from_start = Suppress(Literal("Von:"))
 subject_start = Suppress(Literal("Betreff:"))
 participant_start = Suppress(Literal("Teilnehmerin/Teilnehmer:"))
+organization_start = Suppress(Literal("Unternehmen/ Bildungsinstitut:"))
 
 text_from = Combine(OneOrMore(~subject_start + char)).setParseAction(rstrip)
 from_ = from_start + text_from
@@ -29,7 +30,12 @@ text_subject = Combine(OneOrMore(~participant_start + char)).setParseAction(
 )
 subject = subject_start + text_subject
 
-mail = from_ + subject
+text_participant = Combine(
+    OneOrMore(~organization_start + char)
+).setParseAction(rstrip)
+participant = participant_start + text_participant
+
+mail = from_ + subject + participant
 
 # -- Functions ----------------------------------------------------------------
 
