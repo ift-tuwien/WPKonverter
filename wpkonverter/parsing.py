@@ -4,7 +4,6 @@
 
 from pyparsing import (
     Combine,
-    LineEnd,
     Literal,
     OneOrMore,
     Regex,
@@ -14,8 +13,14 @@ from pyparsing import (
 
 # -- Grammar ------------------------------------------------------------------
 
+
+def rstrip(tokens):
+    """Remove trailing whitespace from input"""
+
+    return tokens[0].rstrip()
+
+
 char = Regex(r"[\s\S]")
-rstrip = lambda tokens: tokens[0].rstrip()
 
 from_start = Suppress(Literal("Von:"))
 subject_start = Suppress(Literal("Betreff:"))
@@ -27,7 +32,8 @@ sponsor_start = Suppress(
 )
 message_start = Suppress(Literal("Nachricht:"))
 end = Suppress(Literal("""--
-This is a notification that a contact form was submitted on your website (Wiener Produktionstechnik-Kongress https://wpk.conf.tuwien.ac.at).
+This is a notification that a contact form was submitted on your website \
+(Wiener Produktionstechnik-Kongress https://wpk.conf.tuwien.ac.at).
 """))
 
 
