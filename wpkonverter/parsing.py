@@ -46,7 +46,7 @@ from_ = from_start + text_from
 text_subject = Combine(OneOrMore(~participant_start + char)).set_parse_action(
     rstrip
 )
-subject = subject_start + text_subject
+subject = subject_start + text_subject("subject")
 
 # ===============
 # = Participant =
@@ -55,7 +55,7 @@ subject = subject_start + text_subject
 text_participant = Combine(
     OneOrMore(~organization_start + char)
 ).set_parse_action(rstrip)
-participant = participant_start + text_participant
+participant = participant_start + text_participant("participant")
 
 # ================
 # = Organization =
@@ -64,7 +64,7 @@ participant = participant_start + text_participant
 text_organization = Combine(OneOrMore(~contact_start + char)).set_parse_action(
     rstrip
 )
-organization = organization_start + text_organization
+organization = organization_start + text_organization("organization")
 
 # ===========
 # = Contact =
@@ -73,7 +73,7 @@ organization = organization_start + text_organization
 text_contact = Combine(OneOrMore(~sponsor_start + char)).set_parse_action(
     rstrip
 )
-contact = contact_start + text_contact
+contact = contact_start + text_contact("contact")
 
 # ===========
 # = Sponsor =
@@ -82,14 +82,14 @@ contact = contact_start + text_contact
 text_sponsor = Combine(OneOrMore(~message_start + char)).set_parse_action(
     rstrip
 )
-sponsor = sponsor_start + text_sponsor
+sponsor = sponsor_start + text_sponsor("sponsor")
 
 # ===========
 # = Message =
 # ===========
 
 text_message = Combine(OneOrMore(~end + char)).set_parse_action(rstrip)
-message = message_start + text_message
+message = message_start + text_message("message")
 
 mail = (
     from_
@@ -137,9 +137,18 @@ This is a notification that a contact form was submitted on your website \
     result = mail.parse_string(text)
     print("Parsing Result:\n")
     print("—")
-    for part in result:
-        print(part)
+    for key in (
+        "subject",
+        "participant",
+        "organization",
+        "contact",
+        "sponsor",
+        "message",
+    ):
+        print(f"{key}: {result[key]}")
         print("—")
+
+    print(result["subject"])
 
 
 # -- Main ---------------------------------------------------------------------
