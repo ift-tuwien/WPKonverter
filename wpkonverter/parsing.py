@@ -15,15 +15,21 @@ from pyparsing import (
 
 newline = Suppress(LineEnd())
 char = Regex(r"[\s\S]")
+rstrip = lambda tokens: tokens[0].rstrip()
 
-subject_start = Suppress(Literal("Betreff:"))
-
-text_from = Combine(OneOrMore(~subject_start + char))
 from_start = Suppress(Literal("Von:"))
+subject_start = Suppress(Literal("Betreff:"))
+participant_start = Suppress(Literal("Teilnehmerin/Teilnehmer:"))
 
+text_from = Combine(OneOrMore(~subject_start + char)).setParseAction(rstrip)
 from_ = from_start + text_from
 
-mail = from_
+text_subject = Combine(OneOrMore(~participant_start + char)).setParseAction(
+    rstrip
+)
+subject = subject_start + text_subject
+
+mail = from_ + subject
 
 # -- Functions ----------------------------------------------------------------
 
