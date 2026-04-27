@@ -6,7 +6,7 @@ from argparse import ArgumentParser, Namespace
 from csv import DictReader
 
 from openpyxl import Workbook
-from pyparsing import ParseException, ParseResults
+from pyparsing import col, lineno, ParseException, ParseResults
 
 from wpkonverter.cli import file_exists
 from wpkonverter.parsing import mail, mail_attributes
@@ -33,6 +33,42 @@ def get_arguments() -> Namespace:
     )
 
     return parser.parse_args()
+
+
+def generate_error_message(text: str, error: ParseException) -> str:
+    """Generate a human readable parsing error message
+
+    Args:
+
+        text:
+
+            The parsed text that produced an error
+
+        error:
+
+            The error that occurred while parsing ``text``
+
+    Returns:
+
+        An error message that shows the user where the parsing error occurred
+
+    """
+
+    line_number = lineno(error.loc, text)
+    column_number = col(error.loc, text)
+    lines = text.splitlines()
+    quote_symbol = "> "
+    error_indent = " " * (len(quote_symbol) + column_number)
+
+    error_message: list[str] = []
+    for line in lines[line_number - 5 : line_number]:
+        error_message.append(f"{quote_symbol}{line}")
+    error_message.append(f"{error_indent}^")
+    error_message.append(f"{error_indent}{error}")
+    for line in lines[line_number : line_number + 1]:
+        error_message.append(f"{quote_symbol}{line}")
+
+    return "\n".join(error_message)
 
 
 def store_data_workbook(parsed_mails: list[ParseResults]) -> None:
@@ -84,7 +120,9 @@ def main() -> None:
                 for attribute in mail_attributes:
                     print(f"{attribute}: {parsed_mail[attribute]}")
                     print("—")
-            except ParseException:
-                print("Unable to parse data\n")
+            except ParseException as error:
+                print("Unable to parse data:\n")
+                print(generate_error_message(text, error))
+                print()
 
         store_data_workbook(parsed_mails)
