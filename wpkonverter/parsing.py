@@ -2,6 +2,10 @@
 
 # -- Imports ------------------------------------------------------------------
 
+from csv import DictReader
+from logging import getLogger
+from pathlib import Path
+
 from pyparsing import (
     col,
     Combine,
@@ -9,48 +13,10 @@ from pyparsing import (
     Literal,
     OneOrMore,
     ParseException,
+    ParseResults,
     Regex,
     Suppress,
 )
-
-# -- Functions ----------------------------------------------------------------
-
-
-def generate_error_message(text: str, error: ParseException) -> str:
-    """Generate a human readable parsing error message
-
-    Args:
-
-        text:
-
-            The parsed text that produced an error
-
-        error:
-
-            The error that occurred while parsing ``text``
-
-    Returns:
-
-        An error message that shows the user where the parsing error occurred
-
-    """
-
-    line_number = lineno(error.loc, text)
-    column_number = col(error.loc, text)
-    lines = text.splitlines()
-    quote_symbol = "> "
-    error_indent = " " * (len(quote_symbol) + column_number)
-
-    error_message: list[str] = []
-    for line in lines[line_number - 5 : line_number]:
-        error_message.append(f"{quote_symbol}{line}")
-    error_message.append(f"{error_indent}^")
-    error_message.append(f"{error_indent}{error}")
-    for line in lines[line_number : line_number + 1]:
-        error_message.append(f"{quote_symbol}{line}")
-
-    return "\n".join(error_message)
-
 
 # -- Grammar ------------------------------------------------------------------
 
@@ -168,3 +134,82 @@ mail_attributes = [
     "sponsor",
     "message",
 ]
+
+# -- Functions ----------------------------------------------------------------
+
+
+def generate_error_message(text: str, error: ParseException) -> str:
+    """Generate a human readable parsing error message
+
+    Args:
+
+        text:
+
+            The parsed text that produced an error
+
+        error:
+
+            The error that occurred while parsing ``text``
+
+    Returns:
+
+        An error message that shows the user where the parsing error occurred
+
+    """
+
+    line_number = lineno(error.loc, text)
+    column_number = col(error.loc, text)
+    lines = text.splitlines()
+    quote_symbol = "> "
+    error_indent = " " * (len(quote_symbol) + column_number)
+
+    error_message: list[str] = []
+    for line in lines[line_number - 5 : line_number]:
+        error_message.append(f"{quote_symbol}{line}")
+    error_message.append(f"{error_indent}^")
+    error_message.append(f"{error_indent}{error}")
+    for line in lines[line_number : line_number + 1]:
+        error_message.append(f"{quote_symbol}{line}")
+
+    return "\n".join(error_message)
+
+
+def parse_csv_file(filepath: Path) -> list[ParseResults]:
+    """Parse CSV mails for registration data
+
+    Args:
+
+        filepath:
+
+            Path to CSV file that contains registration mails
+
+    Returns:
+
+        A list of parsed mail data
+
+    """
+
+    logger = getLogger(__name__)
+
+    parsed_mails: list[ParseResults] = []
+    with open(filepath, newline="", encoding="utf8") as csvfile:
+        reader = DictReader(csvfile)
+
+        for mail_number, row in enumerate(reader, start=1):
+            text = row["Text"]
+            logger.debug("Mail text: %s", text)
+            try:
+                parsed_mail = mail.parse_string(text, parse_all=True)
+            except ParseException as error:
+                print(
+                    f"Unable to parse data in mail {mail_number}:\n\n"
+                    f"{generate_error_message(text, error)}\n"
+                )
+                continue
+
+            parsed_mails.append(parsed_mail)
+
+            for attribute in mail_attributes:
+                logger.debug("%s: %s", attribute, parsed_mail[attribute])
+
+    return parsed_mails

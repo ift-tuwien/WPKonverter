@@ -3,17 +3,16 @@
 # -- Import -------------------------------------------------------------------
 
 from argparse import ArgumentParser, Namespace
-from csv import DictReader
 from logging import basicConfig, getLogger
 
 from openpyxl import Workbook
 from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
-from pyparsing import ParseException, ParseResults
+from pyparsing import ParseResults
 
 from wpkonverter.cli import file_exists
-from wpkonverter.parsing import generate_error_message, mail, mail_attributes
+from wpkonverter.parsing import mail_attributes, parse_csv_file
 
 # -- Functions ----------------------------------------------------------------
 
@@ -110,25 +109,7 @@ def main() -> None:
     logger.info("CLI Arguments: %s", arguments)
 
     try:
-        with open(arguments.filepath, newline="", encoding="utf8") as csvfile:
-            reader = DictReader(csvfile)
-            parsed_mails: list[ParseResults] = []
-            for mail_number, row in enumerate(reader, start=1):
-                text = row["Text"]
-                logger.debug("Mail text: %s", text)
-                try:
-                    parsed_mail = mail.parse_string(text, parse_all=True)
-                    parsed_mails.append(parsed_mail)
-
-                    for attribute in mail_attributes:
-                        logger.debug(
-                            "%s: %s", attribute, parsed_mail[attribute]
-                        )
-                except ParseException as error:
-                    print(f"Unable to parse data in mail {mail_number}:\n")
-                    print(generate_error_message(text, error))
-                    print()
-
-            store_data_workbook(parsed_mails)
+        parsed_mails = parse_csv_file(arguments.filepath)
+        store_data_workbook(parsed_mails)
     except UnicodeDecodeError as error:
         print(f"Unable to read file “{arguments.filepath}”: {error}")
