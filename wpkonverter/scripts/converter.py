@@ -132,7 +132,7 @@ def main() -> None:
             text = row["Text"]
             logger.debug("Mail text: %s", text)
             try:
-                parsed_mail = mail.parse_string(text)
+                parsed_mail = mail.parse_string(text, parse_all=True)
                 parsed_mails.append(parsed_mail)
 
                 for attribute in mail_attributes:

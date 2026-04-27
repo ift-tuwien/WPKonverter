@@ -7,7 +7,6 @@ from pyparsing import (
     Literal,
     OneOrMore,
     Regex,
-    StringEnd,
     Suppress,
 )
 
@@ -118,7 +117,6 @@ mail = (
     + message
     + end
     + end_mail
-    + StringEnd()
 )
 mail_attributes = [
     "subject",
