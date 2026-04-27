@@ -9,6 +9,7 @@ from logging import basicConfig, getLogger
 from openpyxl import Workbook
 from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
 from pyparsing import col, lineno, ParseException, ParseResults
 
 from wpkonverter.cli import file_exists
@@ -106,6 +107,15 @@ def store_data_workbook(parsed_mails: list[ParseResults]) -> None:
     for row in worksheet[f"{start_column}1:{end_column}1"]:
         for cell in row:
             cell.font = bold
+
+    dimension_holder = DimensionHolder(worksheet=worksheet)
+
+    for column in range(worksheet.min_column, worksheet.max_column + 1):
+        dimension_holder[get_column_letter(column)] = ColumnDimension(
+            worksheet, min=column, max=column, width=40
+        )
+
+    worksheet.column_dimensions = dimension_holder
 
     for parsed_mail in parsed_mails:
         worksheet.append(
