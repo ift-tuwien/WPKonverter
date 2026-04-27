@@ -59,7 +59,9 @@ def store_data_workbook(data: DataFrame) -> None:
         border_type="hair", font_size=12, horizontal_alignment="left"
     )
     style_frame = StyleFrame(data, styler_obj=default_style)
-    header_style = Styler(bold=True, font_size=16)
+    header_style = Styler(
+        bold=True, font_size=16, border_type={"bottom": "thin"}
+    )
     style_frame.apply_headers_style(styler_obj=header_style)
     style_frame.set_column_width(columns=style_frame.columns, width=40)
 
