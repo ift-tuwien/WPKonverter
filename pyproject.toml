@@ -37,7 +37,7 @@ dev = [
 ]
 
 [project.scripts]
-wpkonverter = "wpkonverter.scripts.converter:main"
+wpkonverter = "wpkonverter.converter:main"
 
 [project.urls]
 Source = "https://github.com/ift-tuwien/WPKonverter/"
