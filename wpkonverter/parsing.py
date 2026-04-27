@@ -174,7 +174,7 @@ def generate_error_message(text: str, error: ParseException) -> str:
     return "\n".join(error_message)
 
 
-def parse_csv_file(filepath: Path) -> list[dict[str, Any]]:
+def parse_csv_file(filepath: Path) -> dict[str, list[Any]]:
     """Parse CSV mails for registration data
 
     Args:
@@ -191,7 +191,9 @@ def parse_csv_file(filepath: Path) -> list[dict[str, Any]]:
 
     logger = getLogger(__name__)
 
-    registration_data: list[dict[str, Any]] = []
+    registration_data: dict[str, list[Any]] = {
+        attribute: [] for attribute in mail_attributes
+    }
     with open(filepath, newline="", encoding="utf8") as csvfile:
         reader = DictReader(csvfile)
 
@@ -206,13 +208,9 @@ def parse_csv_file(filepath: Path) -> list[dict[str, Any]]:
                     f"{generate_error_message(text, error)}\n"
                 )
                 continue
-            mail_data = {
-                attribute: parsed_mail[attribute]
-                for attribute in mail_attributes
-            }
+            for attribute in registration_data:
+                registration_data[attribute].append(parsed_mail[attribute])
 
-            registration_data.append(mail_data)
-
-            logger.debug("Mail Data: %s", mail_data)
+    logger.debug("Registration Data: %s", registration_data)
 
     return registration_data

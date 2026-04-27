@@ -47,7 +47,7 @@ def get_arguments() -> Namespace:
     return parser.parse_args()
 
 
-def store_data_workbook(parsed_mails: list[dict[str, Any]]) -> None:
+def store_data_workbook(parsed_mails: dict[str, list[Any]]) -> None:
     """Store registration data in Excel file
 
     Args:
@@ -62,9 +62,7 @@ def store_data_workbook(parsed_mails: list[dict[str, Any]]) -> None:
     worksheet = workbook.active
     worksheet.title = "Pre-registration"
 
-    assert len(parsed_mails) >= 1, "No registration data provided"
-
-    mail_attributes = parsed_mails[0].keys()
+    mail_attributes = list(parsed_mails.keys())
     worksheet.append([attribute.capitalize() for attribute in mail_attributes])
 
     bold = Font(bold=True)
@@ -83,9 +81,11 @@ def store_data_workbook(parsed_mails: list[dict[str, Any]]) -> None:
 
     worksheet.column_dimensions = dimension_holder
 
-    for parsed_mail in parsed_mails:
+    assert len(mail_attributes) >= 1
+    number_rows = len(parsed_mails[mail_attributes[0]])
+    for row in range(number_rows):
         worksheet.append(
-            [parsed_mail[attribute] for attribute in mail_attributes]
+            [parsed_mails[attribute][row] for attribute in mail_attributes]
         )
 
     filename = "wpk.xlsx"
