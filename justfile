@@ -9,6 +9,9 @@ package := "wpkonverter"
 command := package
 input := "WPK.CSV"
 
+sphinx_directory := "sphinx"
+sphinx_input_directory := "doc/sphinx"
+
 # -- Recipes -------------------------------------------------------------------
 
 # Setup Python environment
@@ -53,3 +56,22 @@ release version:
 	git tag "${version}"
 	git push
 	git push --tags
+
+# Generate documentation
+[group('documentation')]
+documentation: setup
+	uv run sphinx-build -M html {{sphinx_input_directory}} {{sphinx_directory}}
+
+# Remove documentation
+[group('documentation')]
+[windows]
+clean:
+	#!pwsh
+	Remove-Item -Recurse {{sphinx_directory}}
+
+# Remove documentation
+[group('documentation')]
+[unix]
+clean:
+	#!/usr/bin/env sh -e
+	rm -rf {{sphinx_directory}}
