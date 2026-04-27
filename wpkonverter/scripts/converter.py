@@ -7,6 +7,7 @@ from csv import DictReader
 from logging import basicConfig, getLogger
 
 from openpyxl import Workbook
+from openpyxl.styles import Font
 from pyparsing import col, lineno, ParseException, ParseResults
 
 from wpkonverter.cli import file_exists
@@ -97,6 +98,11 @@ def store_data_workbook(parsed_mails: list[ParseResults]) -> None:
     worksheet.title = "Pre-registration"
 
     worksheet.append([attribute.capitalize() for attribute in mail_attributes])
+
+    bold = Font(bold=True)
+    for row in worksheet[f"A1:{chr(ord('A') + len(mail_attributes))}1"]:
+        for cell in row:
+            cell.font = bold
 
     for parsed_mail in parsed_mails:
         worksheet.append(
