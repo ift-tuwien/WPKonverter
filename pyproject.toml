@@ -31,7 +31,8 @@ version = "0.0.1"
 [project.optional-dependencies]
 dev = [
     "Flake8-pyproject>=1.2.3",
-    "mypy",
+    # mypy 1.20 reports a false positive about an overload of basicConfig
+    "mypy>=1.19,<1.20",
     "pylint>=3.3.1",
 ]
 

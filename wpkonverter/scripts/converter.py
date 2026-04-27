@@ -4,6 +4,7 @@
 
 from argparse import ArgumentParser, Namespace
 from csv import DictReader
+from logging import basicConfig, getLogger
 
 from openpyxl import Workbook
 from pyparsing import col, lineno, ParseException, ParseResults
@@ -26,6 +27,15 @@ def get_arguments() -> Namespace:
     parser = ArgumentParser(
         description="Extract data from WPK registration mails"
     )
+
+    parser.add_argument(
+        "--log",
+        choices=("debug", "info", "warning", "error", "critical"),
+        default="warning",
+        required=False,
+        help="minimum log level",
+    )
+
     parser.add_argument(
         "filepath",
         type=file_exists,
@@ -103,25 +113,32 @@ def store_data_workbook(parsed_mails: list[ParseResults]) -> None:
 def main() -> None:
     """Convert WPK mail registration data"""
 
-    filepath = get_arguments().filepath
+    arguments = get_arguments()
 
-    with open(filepath, newline="", encoding="utf8") as csvfile:
+    basicConfig(
+        encoding="utf-8",
+        format="{asctime} {levelname:7} {message}",
+        level=arguments.log.upper(),
+        style="{",
+    )
+
+    logger = getLogger(__name__)
+    logger.info("CLI Arguments: %s", arguments)
+
+    with open(arguments.filepath, newline="", encoding="utf8") as csvfile:
         reader = DictReader(csvfile)
         parsed_mails: list[ParseResults] = []
-        for row in reader:
+        for mail_number, row in enumerate(reader, start=1):
             text = row["Text"]
-            print(text)
-            print("—" * 50)
+            logger.debug("Mail text: %s", text)
             try:
                 parsed_mail = mail.parse_string(text)
                 parsed_mails.append(parsed_mail)
 
-                print("Parsed Data:\n")
                 for attribute in mail_attributes:
-                    print(f"{attribute}: {parsed_mail[attribute]}")
-                    print("—")
+                    logger.debug("%s: %s", attribute, parsed_mail[attribute])
             except ParseException as error:
-                print("Unable to parse data:\n")
+                print(f"Unable to parse data in mail {mail_number}:\n")
                 print(generate_error_message(text, error))
                 print()
 
