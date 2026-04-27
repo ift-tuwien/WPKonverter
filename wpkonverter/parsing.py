@@ -7,6 +7,7 @@ from logging import getLogger
 from pathlib import Path
 from typing import Any
 
+from pandas import DataFrame
 from pyparsing import (
     col,
     Combine,
@@ -68,7 +69,7 @@ from_ = from_start + text_from
 text_subject = Combine(OneOrMore(~participant_start + char)).set_parse_action(
     rstrip
 )
-subject = subject_start + text_subject("subject")
+subject = subject_start + text_subject("Subject")
 
 # ===============
 # = Participant =
@@ -77,7 +78,7 @@ subject = subject_start + text_subject("subject")
 text_participant = Combine(
     OneOrMore(~organization_start + char)
 ).set_parse_action(rstrip)
-participant = participant_start + text_participant("participant")
+participant = participant_start + text_participant("Participant")
 
 # ================
 # = Organization =
@@ -86,7 +87,7 @@ participant = participant_start + text_participant("participant")
 text_organization = Combine(OneOrMore(~contact_start + char)).set_parse_action(
     rstrip
 )
-organization = organization_start + text_organization("organization")
+organization = organization_start + text_organization("Organization")
 
 # ===========
 # = Contact =
@@ -95,7 +96,7 @@ organization = organization_start + text_organization("organization")
 text_contact = Combine(OneOrMore(~sponsor_start + char)).set_parse_action(
     rstrip
 )
-contact = contact_start + text_contact("contact")
+contact = contact_start + text_contact("Contact")
 
 # ===========
 # = Sponsor =
@@ -104,7 +105,7 @@ contact = contact_start + text_contact("contact")
 text_sponsor = Combine(OneOrMore(~message_start + char)).set_parse_action(
     rstrip
 )
-sponsor = sponsor_start + text_sponsor("sponsor")
+sponsor = sponsor_start + text_sponsor("Sponsor")
 
 # ===========
 # = Message =
@@ -113,7 +114,7 @@ sponsor = sponsor_start + text_sponsor("sponsor")
 text_message = Combine(
     OneOrMore(~end + char).set_whitespace_chars(" \t")
 ).set_parse_action(strip)
-message = message_start + text_message("message")
+message = message_start + text_message("Message")
 
 mail = (
     from_
@@ -127,12 +128,12 @@ mail = (
     + end_mail
 )
 mail_attributes = [
-    "subject",
-    "participant",
-    "organization",
-    "contact",
-    "sponsor",
-    "message",
+    "Subject",
+    "Participant",
+    "Organization",
+    "Contact",
+    "Sponsor",
+    "Message",
 ]
 
 # -- Functions ----------------------------------------------------------------
@@ -174,7 +175,7 @@ def generate_error_message(text: str, error: ParseException) -> str:
     return "\n".join(error_message)
 
 
-def parse_csv_file(filepath: Path) -> dict[str, list[Any]]:
+def parse_csv_file(filepath: Path) -> DataFrame:
     """Parse CSV mails for registration data
 
     Args:
@@ -212,5 +213,4 @@ def parse_csv_file(filepath: Path) -> dict[str, list[Any]]:
                 registration_data[attribute].append(parsed_mail[attribute])
 
     logger.debug("Registration Data: %s", registration_data)
-
-    return registration_data
+    return DataFrame(data=registration_data)

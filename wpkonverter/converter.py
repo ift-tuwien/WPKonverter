@@ -4,12 +4,9 @@
 
 from argparse import ArgumentParser, Namespace
 from logging import basicConfig, getLogger
-from typing import Any
 
-from openpyxl import Workbook
-from openpyxl.styles import Font
-from openpyxl.utils import get_column_letter
-from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
+from pandas import DataFrame
+from styleframe import StyleFrame, Styler
 
 from wpkonverter.cli import file_exists
 from wpkonverter.parsing import parse_csv_file
@@ -47,7 +44,7 @@ def get_arguments() -> Namespace:
     return parser.parse_args()
 
 
-def store_data_workbook(parsed_mails: dict[str, list[Any]]) -> None:
+def store_data_workbook(data: DataFrame) -> None:
     """Store registration data in Excel file
 
     Args:
@@ -58,38 +55,16 @@ def store_data_workbook(parsed_mails: dict[str, list[Any]]) -> None:
 
     """
 
-    workbook = Workbook()
-    worksheet = workbook.active
-    worksheet.title = "Pre-registration"
-
-    mail_attributes = list(parsed_mails.keys())
-    worksheet.append([attribute.capitalize() for attribute in mail_attributes])
-
-    bold = Font(bold=True)
-    start_column = get_column_letter(worksheet.min_column)
-    end_column = get_column_letter(worksheet.max_column)
-    for row in worksheet[f"{start_column}1:{end_column}1"]:
-        for cell in row:
-            cell.font = bold
-
-    dimension_holder = DimensionHolder(worksheet=worksheet)
-
-    for column in range(worksheet.min_column, worksheet.max_column + 1):
-        dimension_holder[get_column_letter(column)] = ColumnDimension(
-            worksheet, min=column, max=column, width=40
-        )
-
-    worksheet.column_dimensions = dimension_holder
-
-    assert len(mail_attributes) >= 1
-    number_rows = len(parsed_mails[mail_attributes[0]])
-    for row in range(number_rows):
-        worksheet.append(
-            [parsed_mails[attribute][row] for attribute in mail_attributes]
-        )
+    default_style = Styler(font_size=12)
+    style_frame = StyleFrame(data, styler_obj=default_style)
+    header_style = Styler(bold=True, font_size=16)
+    style_frame.apply_headers_style(styler_obj=header_style)
+    style_frame.set_column_width(columns=style_frame.columns, width=40)
 
     filename = "wpk.xlsx"
-    workbook.save(filename)
+    writer = style_frame.to_excel(filename)
+    writer.close()
+
     print(f"Stored data in “{filename}”")
 
 

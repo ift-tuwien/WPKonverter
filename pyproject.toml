@@ -17,6 +17,7 @@ classifiers = [
 dependencies = [
     "openpyxl>=3.1.5",
     "pyparsing>=3.3.2",
+    "styleframe>=4.2",
 ]
 description = """Extract information from WPK mails"""
 keywords = [
