@@ -66,7 +66,7 @@ def store_data_workbook(data: DataFrame) -> None:
     style_frame.set_column_width(columns=style_frame.columns, width=40)
 
     filename = "wpk.xlsx"
-    writer = style_frame.to_excel(filename)
+    writer = style_frame.to_excel(filename, sheet_name="Pre-registration")
     writer.close()
 
     print(f"Stored data in “{filename}”")
