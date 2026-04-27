@@ -145,21 +145,26 @@ def main() -> None:
     logger = getLogger(__name__)
     logger.info("CLI Arguments: %s", arguments)
 
-    with open(arguments.filepath, newline="", encoding="utf8") as csvfile:
-        reader = DictReader(csvfile)
-        parsed_mails: list[ParseResults] = []
-        for mail_number, row in enumerate(reader, start=1):
-            text = row["Text"]
-            logger.debug("Mail text: %s", text)
-            try:
-                parsed_mail = mail.parse_string(text, parse_all=True)
-                parsed_mails.append(parsed_mail)
+    try:
+        with open(arguments.filepath, newline="", encoding="utf8") as csvfile:
+            reader = DictReader(csvfile)
+            parsed_mails: list[ParseResults] = []
+            for mail_number, row in enumerate(reader, start=1):
+                text = row["Text"]
+                logger.debug("Mail text: %s", text)
+                try:
+                    parsed_mail = mail.parse_string(text, parse_all=True)
+                    parsed_mails.append(parsed_mail)
 
-                for attribute in mail_attributes:
-                    logger.debug("%s: %s", attribute, parsed_mail[attribute])
-            except ParseException as error:
-                print(f"Unable to parse data in mail {mail_number}:\n")
-                print(generate_error_message(text, error))
-                print()
+                    for attribute in mail_attributes:
+                        logger.debug(
+                            "%s: %s", attribute, parsed_mail[attribute]
+                        )
+                except ParseException as error:
+                    print(f"Unable to parse data in mail {mail_number}:\n")
+                    print(generate_error_message(text, error))
+                    print()
 
-        store_data_workbook(parsed_mails)
+            store_data_workbook(parsed_mails)
+    except UnicodeDecodeError as error:
+        print(f"Unable to read file “{arguments.filepath}”: {error}")
