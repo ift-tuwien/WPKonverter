@@ -8,6 +8,7 @@ from logging import basicConfig, getLogger
 
 from openpyxl import Workbook
 from openpyxl.styles import Font
+from openpyxl.utils import get_column_letter
 from pyparsing import col, lineno, ParseException, ParseResults
 
 from wpkonverter.cli import file_exists
@@ -100,7 +101,9 @@ def store_data_workbook(parsed_mails: list[ParseResults]) -> None:
     worksheet.append([attribute.capitalize() for attribute in mail_attributes])
 
     bold = Font(bold=True)
-    for row in worksheet[f"A1:{chr(ord('A') + len(mail_attributes))}1"]:
+    start_column = get_column_letter(worksheet.min_column)
+    end_column = get_column_letter(worksheet.max_column)
+    for row in worksheet[f"{start_column}1:{end_column}1"]:
         for cell in row:
             cell.font = bold
 
