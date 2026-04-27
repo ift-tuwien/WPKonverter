@@ -94,6 +94,7 @@ def store_data_workbook(parsed_mails: list[ParseResults]) -> None:
 
     workbook = Workbook()
     worksheet = workbook.active
+    worksheet.title = "Pre-registration"
 
     worksheet.append([attribute.capitalize() for attribute in mail_attributes])
 
