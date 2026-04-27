@@ -4,15 +4,15 @@
 
 from argparse import ArgumentParser, Namespace
 from logging import basicConfig, getLogger
+from typing import Any
 
 from openpyxl import Workbook
 from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
-from pyparsing import ParseResults
 
 from wpkonverter.cli import file_exists
-from wpkonverter.parsing import mail_attributes, parse_csv_file
+from wpkonverter.parsing import parse_csv_file
 
 # -- Functions ----------------------------------------------------------------
 
@@ -47,7 +47,7 @@ def get_arguments() -> Namespace:
     return parser.parse_args()
 
 
-def store_data_workbook(parsed_mails: list[ParseResults]) -> None:
+def store_data_workbook(parsed_mails: list[dict[str, Any]]) -> None:
     """Store registration data in Excel file
 
     Args:
@@ -62,6 +62,9 @@ def store_data_workbook(parsed_mails: list[ParseResults]) -> None:
     worksheet = workbook.active
     worksheet.title = "Pre-registration"
 
+    assert len(parsed_mails) >= 1, "No registration data provided"
+
+    mail_attributes = parsed_mails[0].keys()
     worksheet.append([attribute.capitalize() for attribute in mail_attributes])
 
     bold = Font(bold=True)

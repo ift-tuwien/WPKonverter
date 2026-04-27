@@ -5,6 +5,7 @@
 from csv import DictReader
 from logging import getLogger
 from pathlib import Path
+from typing import Any
 
 from pyparsing import (
     col,
@@ -13,7 +14,6 @@ from pyparsing import (
     Literal,
     OneOrMore,
     ParseException,
-    ParseResults,
     Regex,
     Suppress,
 )
@@ -174,7 +174,7 @@ def generate_error_message(text: str, error: ParseException) -> str:
     return "\n".join(error_message)
 
 
-def parse_csv_file(filepath: Path) -> list[ParseResults]:
+def parse_csv_file(filepath: Path) -> list[dict[str, Any]]:
     """Parse CSV mails for registration data
 
     Args:
@@ -191,7 +191,7 @@ def parse_csv_file(filepath: Path) -> list[ParseResults]:
 
     logger = getLogger(__name__)
 
-    parsed_mails: list[ParseResults] = []
+    registration_data: list[dict[str, Any]] = []
     with open(filepath, newline="", encoding="utf8") as csvfile:
         reader = DictReader(csvfile)
 
@@ -206,10 +206,13 @@ def parse_csv_file(filepath: Path) -> list[ParseResults]:
                     f"{generate_error_message(text, error)}\n"
                 )
                 continue
+            mail_data = {
+                attribute: parsed_mail[attribute]
+                for attribute in mail_attributes
+            }
 
-            parsed_mails.append(parsed_mail)
+            registration_data.append(mail_data)
 
-            for attribute in mail_attributes:
-                logger.debug("%s: %s", attribute, parsed_mail[attribute])
+            logger.debug("Mail Data: %s", mail_data)
 
-    return parsed_mails
+    return registration_data
