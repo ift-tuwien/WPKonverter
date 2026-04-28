@@ -5,8 +5,7 @@
 from argparse import ArgumentParser, Namespace
 from logging import basicConfig, getLogger
 
-from pandas import DataFrame
-from styleframe import StyleFrame, Styler
+from pandas import DataFrame, ExcelWriter
 
 from wpkonverter.cli import file_exists
 from wpkonverter.parsing import parse_csv_file
@@ -55,19 +54,11 @@ def store_data_workbook(data: DataFrame) -> None:
 
     """
 
-    default_style = Styler(
-        border_type="hair", font_size=12, horizontal_alignment="left"
-    )
-    style_frame = StyleFrame(data, styler_obj=default_style)
-    header_style = Styler(
-        bold=True, font_size=16, border_type={"bottom": "thin"}
-    )
-    style_frame.apply_headers_style(styler_obj=header_style)
-    style_frame.set_column_width(columns=style_frame.columns, width=40)
-
     filename = "wpk.xlsx"
-    writer = style_frame.to_excel(filename, sheet_name="Pre-registration")
-    writer.close()
+    sheet_name = "Pre-registration"
+    with ExcelWriter(filename, engine="xlsxwriter") as writer:
+        data.to_excel(writer, sheet_name=sheet_name)
+        writer.sheets[sheet_name].autofit()
 
     print(f"Stored data in “{filename}”")
 
