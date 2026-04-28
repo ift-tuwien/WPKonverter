@@ -59,12 +59,16 @@ def store_data_workbook(data: DataFrame) -> None:
     sheet_name = "Pre-registration"
     with ExcelWriter(filename, engine="xlsxwriter") as writer:
         data.to_excel(writer, index=False, sheet_name=sheet_name)
-        rows, columns = data.shape
-        logger.debug("Rows: %s, Columns %s", rows, columns)
         workbook = writer.book
         worksheet = writer.sheets[sheet_name]
+        rows, columns = data.shape
+
+        header_format = workbook.add_format({"bold": True})
+        worksheet.set_row(0, cell_format=header_format)
+
+        logger.debug("Rows: %s, Columns %s", rows, columns)
         cell_format = workbook.add_format({"text_wrap": True, "valign": "top"})
-        for row in range(rows + 1):
+        for row in range(1, rows + 1):
             worksheet.set_row(row, cell_format=cell_format)
         writer.sheets[sheet_name].autofit()
 
