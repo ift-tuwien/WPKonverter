@@ -1,4 +1,4 @@
-/wpk.csv
+*.csv
 /uv.lock
 *.xlsx
 /sphinx
