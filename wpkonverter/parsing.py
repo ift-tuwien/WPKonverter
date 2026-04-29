@@ -13,10 +13,9 @@ from pyparsing import (
     Combine,
     lineno,
     Literal,
-    OneOrMore,
     ParseException,
     ParseResults,
-    Regex,
+    SkipTo,
     Suppress,
 )
 
@@ -34,8 +33,6 @@ def strip(tokens):
 
     return tokens[0].strip()
 
-
-char = Regex(r"[\s\S]")
 
 from_start = Suppress(Literal("Von:"))
 subject_start = Suppress(Literal("Betreff:"))
@@ -60,61 +57,49 @@ end_mail = Suppress(
 # = From =
 # ========
 
-text_from = Combine(OneOrMore(~subject_start + char)).set_parse_action(rstrip)
+text_from = SkipTo(subject_start).set_parse_action(rstrip)
 from_ = from_start + text_from
 
 # ===========
 # = Subject =
 # ===========
 
-text_subject = Combine(OneOrMore(~participant_start + char)).set_parse_action(
-    rstrip
-)
+text_subject = SkipTo(participant_start).set_parse_action(rstrip)
 subject = subject_start + text_subject("Subject")
 
 # ===============
 # = Participant =
 # ===============
 
-text_participant = Combine(
-    OneOrMore(~organization_start + char)
-).set_parse_action(rstrip)
+text_participant = SkipTo(organization_start).set_parse_action(rstrip)
 participant = participant_start + text_participant("Participant")
 
 # ================
 # = Organization =
 # ================
 
-text_organization = Combine(OneOrMore(~contact_start + char)).set_parse_action(
-    rstrip
-)
+text_organization = SkipTo(contact_start).set_parse_action(rstrip)
 organization = organization_start + text_organization("Organization")
 
 # ===========
 # = Contact =
 # ===========
 
-text_contact = Combine(OneOrMore(~sponsor_start + char)).set_parse_action(
-    rstrip
-)
+text_contact = SkipTo(sponsor_start).set_parse_action(rstrip)
 contact = contact_start + text_contact("Contact")
 
 # ===========
 # = Sponsor =
 # ===========
 
-text_sponsor = Combine(OneOrMore(~message_start + char)).set_parse_action(
-    rstrip
-)
+text_sponsor = SkipTo(message_start).set_parse_action(rstrip)
 sponsor = sponsor_start + text_sponsor("Sponsor")
 
 # ===========
 # = Message =
 # ===========
 
-text_message = Combine(
-    OneOrMore(~end + char).set_whitespace_chars(" \t")
-).set_parse_action(strip)
+text_message = Combine(SkipTo(end)).set_parse_action(strip)
 message = message_start + text_message("Message")
 
 pre_registration = (
