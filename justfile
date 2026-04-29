@@ -7,7 +7,7 @@ set windows-shell := ["pwsh.exe", "-NoLogo", "-Command"]
 
 package := "wpkonverter"
 command := package
-input := "WPK.CSV"
+input := "pre-registration.CSV"
 
 sphinx_directory := "sphinx"
 sphinx_input_directory := "doc/sphinx"
