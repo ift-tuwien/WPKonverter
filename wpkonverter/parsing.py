@@ -15,6 +15,7 @@ from pyparsing import (
     Literal,
     OneOrMore,
     ParseException,
+    ParseResults,
     Regex,
     Suppress,
 )
@@ -116,7 +117,7 @@ text_message = Combine(
 ).set_parse_action(strip)
 message = message_start + text_message("Message")
 
-mail = (
+pre_registration = (
     from_
     + subject
     + participant
@@ -127,14 +128,6 @@ mail = (
     + end
     + end_mail
 )
-mail_attributes = [
-    "Subject",
-    "Participant",
-    "Organization",
-    "Contact",
-    "Sponsor",
-    "Message",
-]
 
 # -- Functions ----------------------------------------------------------------
 
@@ -192,9 +185,7 @@ def parse_csv_file(filepath: Path) -> DataFrame:
 
     logger = getLogger(__name__)
 
-    registration_data: dict[str, list[Any]] = {
-        attribute: [] for attribute in mail_attributes
-    }
+    parsing_results: list[ParseResults] = []
     with open(filepath, newline="", encoding="utf8") as csvfile:
         reader = DictReader(csvfile)
 
@@ -202,15 +193,22 @@ def parse_csv_file(filepath: Path) -> DataFrame:
             text = row["Text"]
             logger.debug("Mail text: %s", text)
             try:
-                parsed_mail = mail.parse_string(text, parse_all=True)
+                parsing_results.append(
+                    pre_registration.parse_string(text, parse_all=True)
+                )
             except ParseException as error:
                 print(
                     f"Unable to parse data in mail {mail_number}:\n\n"
                     f"{generate_error_message(text, error)}\n"
                 )
                 continue
-            for attribute in registration_data:
-                registration_data[attribute].append(parsed_mail[attribute])
+        registration_data: dict[str, Any] = {}
+        if len(parsing_results) >= 1:
+            for attribute in parsing_results[0].keys():
+                registration_data[attribute] = []
+            for parse_result in parsing_results:
+                for attribute, result in parse_result.items():
+                    registration_data[attribute].append(result)
 
     logger.debug("Registration Data: %s", registration_data)
     return DataFrame(data=registration_data)
