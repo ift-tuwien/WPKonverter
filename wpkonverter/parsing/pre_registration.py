@@ -10,8 +10,8 @@ from wpkonverter.parsing.common import rstrip, strip
 # -- Grammar ------------------------------------------------------------------
 
 
-from_start = Suppress(Keyword("Von:"))
-subject_start = Suppress(Keyword("Betreff:"))
+from_start = Suppress(Keyword("Von:") ^ Keyword("From"))
+subject_start = Suppress(Keyword("Betreff:") ^ Keyword("Subject:"))
 participant_start = Suppress(Keyword("Teilnehmerin/Teilnehmer:"))
 organization_start = Suppress(Keyword("Unternehmen/ Bildungsinstitut:"))
 contact_start = Suppress(Keyword("Kontakt:"))
