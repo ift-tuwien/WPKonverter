@@ -3,30 +3,25 @@
 # -- Imports ------------------------------------------------------------------
 
 
-from pyparsing import (
-    Combine,
-    Literal,
-    SkipTo,
-    Suppress,
-)
+from pyparsing import Combine, Keyword, SkipTo, Suppress
 
 from wpkonverter.parsing.common import rstrip, strip
 
 # -- Grammar ------------------------------------------------------------------
 
 
-from_start = Suppress(Literal("Von:"))
-subject_start = Suppress(Literal("Betreff:"))
-participant_start = Suppress(Literal("Teilnehmerin/Teilnehmer:"))
-organization_start = Suppress(Literal("Unternehmen/ Bildungsinstitut:"))
-contact_start = Suppress(Literal("Kontakt:"))
+from_start = Suppress(Keyword("Von:"))
+subject_start = Suppress(Keyword("Betreff:"))
+participant_start = Suppress(Keyword("Teilnehmerin/Teilnehmer:"))
+organization_start = Suppress(Keyword("Unternehmen/ Bildungsinstitut:"))
+contact_start = Suppress(Keyword("Kontakt:"))
 sponsor_start = Suppress(
-    Literal("Sind Sie daran interessiert, Sponsor oder Redner zu werden?:")
+    Keyword("Sind Sie daran interessiert, Sponsor oder Redner zu werden?:")
 )
-message_start = Suppress(Literal("Nachricht:"))
-end = Suppress(Literal("--"))
+message_start = Suppress(Keyword("Nachricht:"))
+end = Suppress(Keyword("--"))
 end_mail = Suppress(
-    Literal(
+    Keyword(
         "This is a notification that a contact form was submitted on your"
         " website (Wiener Produktionstechnik-Kongress"
         " https://wpk.conf.tuwien.ac.at)."
