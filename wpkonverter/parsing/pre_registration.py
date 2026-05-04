@@ -1,0 +1,96 @@
+"""Parsing support for pre-registration data"""
+
+# -- Imports ------------------------------------------------------------------
+
+
+from pyparsing import (
+    Combine,
+    Literal,
+    SkipTo,
+    Suppress,
+)
+
+from wpkonverter.parsing.common import rstrip, strip
+
+# -- Grammar ------------------------------------------------------------------
+
+
+from_start = Suppress(Literal("Von:"))
+subject_start = Suppress(Literal("Betreff:"))
+participant_start = Suppress(Literal("Teilnehmerin/Teilnehmer:"))
+organization_start = Suppress(Literal("Unternehmen/ Bildungsinstitut:"))
+contact_start = Suppress(Literal("Kontakt:"))
+sponsor_start = Suppress(
+    Literal("Sind Sie daran interessiert, Sponsor oder Redner zu werden?:")
+)
+message_start = Suppress(Literal("Nachricht:"))
+end = Suppress(Literal("--"))
+end_mail = Suppress(
+    Literal(
+        "This is a notification that a contact form was submitted on your"
+        " website (Wiener Produktionstechnik-Kongress"
+        " https://wpk.conf.tuwien.ac.at)."
+    )
+)
+
+
+# ========
+# = From =
+# ========
+
+text_from = SkipTo(subject_start).set_parse_action(rstrip)
+from_ = from_start + text_from
+
+# ===========
+# = Subject =
+# ===========
+
+text_subject = SkipTo(participant_start).set_parse_action(rstrip)
+subject = subject_start + text_subject("Subject")
+
+# ===============
+# = Participant =
+# ===============
+
+text_participant = SkipTo(organization_start).set_parse_action(rstrip)
+participant = participant_start + text_participant("Participant")
+
+# ================
+# = Organization =
+# ================
+
+text_organization = SkipTo(contact_start).set_parse_action(rstrip)
+organization = organization_start + text_organization("Organization")
+
+# ===========
+# = Contact =
+# ===========
+
+text_contact = SkipTo(sponsor_start).set_parse_action(rstrip)
+contact = contact_start + text_contact("Contact")
+
+# ===========
+# = Sponsor =
+# ===========
+
+text_sponsor = SkipTo(message_start).set_parse_action(rstrip)
+sponsor = sponsor_start + text_sponsor("Sponsor")
+
+# ===========
+# = Message =
+# ===========
+
+text_message = Combine(SkipTo(end)).set_parse_action(strip)
+message = message_start + text_message("Message")
+
+pre_registration = (
+    from_
+    + subject
+    + participant
+    + organization
+    + contact
+    + sponsor
+    + message
+    + end
+    + end_mail
+)
