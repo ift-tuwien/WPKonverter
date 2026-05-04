@@ -6,6 +6,7 @@ from pyparsing import (
     col,
     Keyword,
     lineno,
+    Optional,
     ParseException,
     SkipTo,
     Suppress,
@@ -64,11 +65,17 @@ def generate_error_message(text: str, error: ParseException) -> str:
 
 # -- Grammar ------------------------------------------------------------------
 
-from_start = Suppress(Keyword("Von:") ^ Keyword("From"))
+from_start = Suppress(Keyword("Von:") ^ Keyword("From:"))
 subject_start = Suppress(Keyword("Betreff:") ^ Keyword("Subject:"))
 
-participant_start = Suppress(Keyword("Teilnehmerin/Teilnehmer:"))
-attendee_start = participant_start
+participant_start = Suppress(
+    Keyword("Teilnehmerin/Teilnehmer:") ^ Keyword("Participant:")
+)
+speaker_start = Suppress(
+    Optional(Keyword("Speakerinnen/")) + Keyword("Speaker:")
+)
+sponsor_start = Suppress(Keyword("Sponsoren:"))
+attendee_start = participant_start ^ speaker_start ^ sponsor_start
 
 # ========
 # = From =
