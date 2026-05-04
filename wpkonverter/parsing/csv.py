@@ -80,19 +80,18 @@ def get_registration_type(subject: str) -> RegistrationType:
     return RegistrationType.UNKOWN
 
 
-def convert_pre_registration_to_dataframe(parsing_results: list[ParseResults]):
-    """Convert pre-registration parsing data into data frame
+def convert_parse_results_data_frame(parsing_results: list[ParseResults]):
+    """Convert parsing data into data frame
 
     Args:
 
         parsing_results:
 
-            A list of pre-registration parsing results
+            A list of parsing results
 
     Returns:
 
-        A data frame that stores the parsed pre-registration data
-
+        A data frame that stores the parsed data
 
     """
 
@@ -104,7 +103,7 @@ def convert_pre_registration_to_dataframe(parsing_results: list[ParseResults]):
             for attribute, result in parse_result.items():
                 registration_data[attribute].append(result)
 
-    getLogger(__name__).debug("Pre-registration data: %s", registration_data)
+    getLogger(__name__).debug("Converted parsing data: %s", registration_data)
     return DataFrame(data=registration_data)
 
 
@@ -150,6 +149,4 @@ def parse_csv_file(filepath: Path) -> DataFrame:
                 )
                 continue
 
-    return convert_pre_registration_to_dataframe(
-        pre_registration_parsing_results
-    )
+    return convert_parse_results_data_frame(pre_registration_parsing_results)
