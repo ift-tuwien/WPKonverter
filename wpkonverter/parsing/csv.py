@@ -64,7 +64,10 @@ def get_registration_type(subject: str) -> RegistrationType:
 
     pattern_to_type = (
         (re_pattern("Vorregistrierung"), RegistrationType.PRE_REGISTRATION),
-        (re_pattern("Participant registration"), RegistrationType.PARTICIPANT),
+        (
+            re_pattern(r"(Participant|TeilnehmerIn) registration"),
+            RegistrationType.PARTICIPANT,
+        ),
         (
             re_pattern(r"Speaker (Anmeldung|Registration)"),
             RegistrationType.SPEAKER,
