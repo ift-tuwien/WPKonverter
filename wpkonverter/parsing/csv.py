@@ -74,7 +74,7 @@ def get_registration_type(subject: str) -> RegistrationType:
     )
 
     for pattern, registration_type in pattern_to_type:
-        if pattern.match(subject):
+        if pattern.search(subject):
             return registration_type
 
     return RegistrationType.UNKOWN
