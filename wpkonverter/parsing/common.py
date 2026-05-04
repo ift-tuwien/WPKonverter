@@ -4,8 +4,11 @@
 
 from pyparsing import (
     col,
+    Keyword,
     lineno,
     ParseException,
+    SkipTo,
+    Suppress,
 )
 
 # -- Functions ----------------------------------------------------------------
@@ -57,3 +60,28 @@ def generate_error_message(text: str, error: ParseException) -> str:
         error_message.append(f"{quote_symbol}{line}")
 
     return "\n".join(error_message)
+
+
+# -- Grammar ------------------------------------------------------------------
+
+from_start = Suppress(Keyword("Von:") ^ Keyword("From"))
+subject_start = Suppress(Keyword("Betreff:") ^ Keyword("Subject:"))
+
+participant_start = Suppress(Keyword("Teilnehmerin/Teilnehmer:"))
+attendee_start = participant_start
+
+# ========
+# = From =
+# ========
+
+text_from = SkipTo(subject_start).set_parse_action(rstrip)
+from_ = from_start + text_from
+
+# ===========
+# = Subject =
+# ===========
+
+text_subject = SkipTo(attendee_start).set_parse_action(rstrip)
+subject = subject_start + text_subject("Subject")
+
+from_and_subject = from_ + subject

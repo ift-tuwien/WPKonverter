@@ -5,14 +5,16 @@
 
 from pyparsing import Combine, Keyword, SkipTo, Suppress
 
-from wpkonverter.parsing.common import rstrip, strip
+from wpkonverter.parsing.common import (
+    from_,
+    participant_start,
+    rstrip,
+    strip,
+    subject_start,
+)
 
 # -- Grammar ------------------------------------------------------------------
 
-
-from_start = Suppress(Keyword("Von:") ^ Keyword("From"))
-subject_start = Suppress(Keyword("Betreff:") ^ Keyword("Subject:"))
-participant_start = Suppress(Keyword("Teilnehmerin/Teilnehmer:"))
 organization_start = Suppress(Keyword("Unternehmen/ Bildungsinstitut:"))
 contact_start = Suppress(Keyword("Kontakt:"))
 sponsor_start = Suppress(
@@ -27,14 +29,6 @@ end_mail = Suppress(
         " https://wpk.conf.tuwien.ac.at)."
     )
 )
-
-
-# ========
-# = From =
-# ========
-
-text_from = SkipTo(subject_start).set_parse_action(rstrip)
-from_ = from_start + text_from
 
 # ===========
 # = Subject =
