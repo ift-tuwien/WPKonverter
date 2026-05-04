@@ -3,8 +3,11 @@
 # -- Imports ------------------------------------------------------------------
 
 from csv import DictReader
+from enum import auto, Enum
 from logging import getLogger
 from pathlib import Path
+from re import compile as re_pattern
+from sys import stderr
 from typing import Any
 
 from pandas import DataFrame
@@ -16,7 +19,93 @@ from pyparsing import (
 from wpkonverter.parsing.pre_registration import pre_registration
 from wpkonverter.parsing.common import generate_error_message
 
+# -- Classes ------------------------------------------------------------------
+
+
+class RegistrationType(Enum):
+    """Possible registration types"""
+
+    PRE_REGISTRATION = auto()
+    """Pre-Registration"""
+
+    PARTICIPANT = auto()
+    """General Participant"""
+
+    SPEAKER = auto()
+    """Speaker"""
+
+    SPONSOR = auto()
+    """Sponsor"""
+
+    STUDENT = auto()
+    """Student"""
+
+    UNKOWN = auto()
+    "Unknown registration type"
+
+
 # -- Functions ----------------------------------------------------------------
+
+
+def get_registration_type(subject: str) -> RegistrationType:
+    """Determine participation type from mail subject
+
+    Args:
+
+        subject:
+
+            The subject line from the registration mail
+
+    Returns:
+
+        The type of the mail registration
+
+    """
+
+    pattern_to_type = (
+        (re_pattern("Vorregistrierung"), RegistrationType.PRE_REGISTRATION),
+        (re_pattern("Participant registration"), RegistrationType.PARTICIPANT),
+        (
+            re_pattern(r"Speaker (Anmeldung|Registration)"),
+            RegistrationType.SPEAKER,
+        ),
+        (re_pattern("Sponsoren Anmeldung"), RegistrationType.SPONSOR),
+        (re_pattern("Student registration"), RegistrationType.STUDENT),
+    )
+
+    for pattern, registration_type in pattern_to_type:
+        if pattern.match(subject):
+            return registration_type
+
+    return RegistrationType.UNKOWN
+
+
+def convert_pre_registration_to_dataframe(parsing_results: list[ParseResults]):
+    """Convert pre-registration parsing data into data frame
+
+    Args:
+
+        parsing_results:
+
+            A list of pre-registration parsing results
+
+    Returns:
+
+        A data frame that stores the parsed pre-registration data
+
+
+    """
+
+    registration_data: dict[str, Any] = {}
+    if len(parsing_results) >= 1:
+        for attribute in parsing_results[0].keys():
+            registration_data[attribute] = []
+        for parse_result in parsing_results:
+            for attribute, result in parse_result.items():
+                registration_data[attribute].append(result)
+
+    getLogger(__name__).debug("Pre-registration data: %s", registration_data)
+    return DataFrame(data=registration_data)
 
 
 def parse_csv_file(filepath: Path) -> DataFrame:
@@ -36,30 +125,32 @@ def parse_csv_file(filepath: Path) -> DataFrame:
 
     logger = getLogger(__name__)
 
-    parsing_results: list[ParseResults] = []
-    with open(filepath, newline="", encoding="utf8") as csvfile:
+    pre_registration_parsing_results: list[ParseResults] = []
+    with open(filepath, newline="", encoding="utf-8-sig") as csvfile:
         reader = DictReader(csvfile)
 
         for mail_number, row in enumerate(reader, start=1):
+            logger.debug("Row: %s", row)
+            registration_type = get_registration_type(row["Betreff"])
+            logger.debug("Registration type: %s", registration_type)
             text = row["Text"]
             logger.debug("Mail text: %s", text)
-            try:
-                parsing_results.append(
-                    pre_registration.parse_string(text, parse_all=True)
-                )
-            except ParseException as error:
-                print(
-                    f"Unable to parse data in mail {mail_number}:\n\n"
-                    f"{generate_error_message(text, error)}\n"
-                )
-                continue
-        registration_data: dict[str, Any] = {}
-        if len(parsing_results) >= 1:
-            for attribute in parsing_results[0].keys():
-                registration_data[attribute] = []
-            for parse_result in parsing_results:
-                for attribute, result in parse_result.items():
-                    registration_data[attribute].append(result)
+            match registration_type:
+                case RegistrationType.PRE_REGISTRATION:
+                    try:
+                        parser_results = pre_registration.parse_string(
+                            text, parse_all=True
+                        )
+                        logger.debug("Parsing result: %s", parser_results)
+                        pre_registration_parsing_results.append(parser_results)
+                    except ParseException as error:
+                        print(
+                            f"Unable to parse data in mail {mail_number}:\n\n"
+                            f"{generate_error_message(text, error)}\n",
+                            file=stderr,
+                        )
+                        continue
 
-    logger.debug("Registration Data: %s", registration_data)
-    return DataFrame(data=registration_data)
+    return convert_pre_registration_to_dataframe(
+        pre_registration_parsing_results
+    )
