@@ -2,12 +2,17 @@
 
 # -- Imports ------------------------------------------------------------------
 
+from logging import getLogger
+from typing import Any
+
+from pandas import DataFrame
 from pyparsing import (
     col,
     Keyword,
     lineno,
     Optional,
     ParseException,
+    ParseResults,
     SkipTo,
     Suppress,
 )
@@ -61,6 +66,33 @@ def generate_error_message(text: str, error: ParseException) -> str:
         error_message.append(f"{quote_symbol}{line}")
 
     return "\n".join(error_message)
+
+
+def convert_parse_results_data_frame(parsing_results: list[ParseResults]):
+    """Convert parsing data into data frame
+
+    Args:
+
+        parsing_results:
+
+            A list of parsing results
+
+    Returns:
+
+        A data frame that stores the parsed data
+
+    """
+
+    registration_data: dict[str, Any] = {}
+    if len(parsing_results) >= 1:
+        for attribute in parsing_results[0].keys():
+            registration_data[attribute] = []
+        for parse_result in parsing_results:
+            for attribute, result in parse_result.items():
+                registration_data[attribute].append(result)
+
+    getLogger(__name__).debug("Converted parsing data: %s", registration_data)
+    return DataFrame(data=registration_data)
 
 
 # -- Grammar ------------------------------------------------------------------

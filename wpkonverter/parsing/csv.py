@@ -8,7 +8,6 @@ from logging import getLogger
 from pathlib import Path
 from re import compile as re_pattern
 from sys import stderr
-from typing import Any
 
 from pandas import DataFrame
 from pyparsing import (
@@ -17,7 +16,10 @@ from pyparsing import (
 )
 
 from wpkonverter.parsing.pre_registration import pre_registration
-from wpkonverter.parsing.common import generate_error_message
+from wpkonverter.parsing.common import (
+    convert_parse_results_data_frame,
+    generate_error_message,
+)
 
 # -- Classes ------------------------------------------------------------------
 
@@ -81,33 +83,6 @@ def get_registration_type(subject: str) -> RegistrationType:
             return registration_type
 
     return RegistrationType.UNKOWN
-
-
-def convert_parse_results_data_frame(parsing_results: list[ParseResults]):
-    """Convert parsing data into data frame
-
-    Args:
-
-        parsing_results:
-
-            A list of parsing results
-
-    Returns:
-
-        A data frame that stores the parsed data
-
-    """
-
-    registration_data: dict[str, Any] = {}
-    if len(parsing_results) >= 1:
-        for attribute in parsing_results[0].keys():
-            registration_data[attribute] = []
-        for parse_result in parsing_results:
-            for attribute, result in parse_result.items():
-                registration_data[attribute].append(result)
-
-    getLogger(__name__).debug("Converted parsing data: %s", registration_data)
-    return DataFrame(data=registration_data)
 
 
 def parse_csv_file(filepath: Path) -> DataFrame:
