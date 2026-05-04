@@ -135,21 +135,20 @@ def parse_csv_file(filepath: Path) -> DataFrame:
             logger.debug("Registration type: %s", registration_type)
             text = row["Text"]
             logger.debug("Mail text: %s", text)
-            match registration_type:
-                case RegistrationType.PRE_REGISTRATION:
-                    try:
+            try:
+                match registration_type:
+                    case RegistrationType.PRE_REGISTRATION:
                         parser_results = pre_registration.parse_string(
                             text, parse_all=True
                         )
-                        logger.debug("Parsing result: %s", parser_results)
                         pre_registration_parsing_results.append(parser_results)
-                    except ParseException as error:
-                        print(
-                            f"Unable to parse data in mail {mail_number}:\n\n"
-                            f"{generate_error_message(text, error)}\n",
-                            file=stderr,
-                        )
-                        continue
+            except ParseException as error:
+                print(
+                    f"Unable to parse data in mail {mail_number}:\n\n"
+                    f"{generate_error_message(text, error)}\n",
+                    file=stderr,
+                )
+                continue
 
     return convert_pre_registration_to_dataframe(
         pre_registration_parsing_results
