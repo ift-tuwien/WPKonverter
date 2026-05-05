@@ -4,7 +4,7 @@
 
 from enum import auto, Enum
 from logging import getLogger
-from typing import Any
+from typing import Any, Callable
 
 from pandas import DataFrame
 from pyparsing import (
@@ -12,6 +12,7 @@ from pyparsing import (
     Keyword,
     lineno,
     Optional,
+    ParserElement,
     ParseException,
     ParseResults,
     SkipTo,
@@ -67,13 +68,13 @@ class RegistrationType(Enum):
 # -- Functions ----------------------------------------------------------------
 
 
-def rstrip(tokens):
+def rstrip(tokens: ParseResults) -> str:
     """Remove trailing whitespace from input"""
 
     return tokens[0].rstrip()
 
 
-def strip(tokens):
+def strip(tokens: ParseResults) -> str:
     """Remove leading and trailing whitespace from input"""
 
     return tokens[0].strip()
@@ -160,6 +161,49 @@ def convert_parse_results_data_frame(
     return frames
 
 
+def between(
+    start: ParserElement,
+    end: ParserElement,
+    attribute: str | None = None,
+    action: Callable[[ParseResults], str] | None = None,
+):
+    """Get parser element that parses text between two parser elements
+
+    Args:
+
+        start:
+
+            The parser element that starts the text that should be parsed.
+
+        end:
+
+            The parser element that ends the text that should be parsed.
+
+        attribute:
+
+            The attribute (name) that stores the data between ``start`` and
+            ``end``.
+
+        action:
+
+            The parser action that should be applied to the text between
+            ``start`` and ``end``.
+
+    Returns:
+
+        A parser that consumes data between ``start`` (inclusive) and ``end``
+        (exclusive) and stores the text between in the attribute ``attribute``.
+
+    """
+
+    text: ParserElement = SkipTo(end)
+    if action is not None:
+        text = text.set_parse_action(action)
+    if attribute is not None:
+        text = text.set_results_name(attribute)
+    return start + text
+
+
 # -- Grammar ------------------------------------------------------------------
 
 from_start = Suppress(Keyword("Von:") ^ Keyword("From:"))
@@ -172,20 +216,11 @@ speaker_start = Suppress(
     Optional(Keyword("Speakerinnen/")) + Keyword("Speaker:")
 )
 sponsor_start = Suppress(Keyword("Sponsoren:"))
-attendee_start = participant_start ^ speaker_start ^ sponsor_start
+
+organization_start = Suppress(Keyword("Unternehmen/ Bildungsinstitut:"))
 
 # ========
 # = From =
 # ========
 
-text_from = SkipTo(subject_start).set_parse_action(rstrip)
-from_ = from_start + text_from
-
-# ===========
-# = Subject =
-# ===========
-
-text_subject = SkipTo(attendee_start).set_parse_action(rstrip)
-subject = subject_start + text_subject("Subject")
-
-from_and_subject = from_ + subject
+from_ = between(from_start, subject_start)
