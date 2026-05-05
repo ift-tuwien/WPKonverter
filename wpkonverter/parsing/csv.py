@@ -14,12 +14,13 @@ from pyparsing import (
     ParseResults,
 )
 
-from wpkonverter.parsing.pre_registration import pre_registration
 from wpkonverter.parsing.common import (
     convert_parse_results_data_frame,
     generate_error_message,
     RegistrationType,
 )
+from wpkonverter.parsing.pre_registration import pre_registration
+from wpkonverter.parsing.speaker import speaker_registration
 
 # -- Functions ----------------------------------------------------------------
 
@@ -76,7 +77,10 @@ def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
     """
 
     logger = getLogger(__name__)
-    type_to_grammar = {RegistrationType.PRE_REGISTRATION: pre_registration}
+    type_to_grammar = {
+        RegistrationType.PRE_REGISTRATION: pre_registration,
+        RegistrationType.SPEAKER: speaker_registration,
+    }
 
     parsing_results: list[tuple[RegistrationType, ParseResults]] = []
     with open(filepath, newline="", encoding="utf-8-sig") as csvfile:
@@ -98,7 +102,7 @@ def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
             text = row["Text"]
             logger.debug("Mail text: %s", text)
             try:
-                parsed = grammar.parse_string(text, parse_all=True)
+                parsed = grammar.parse_string(text, parse_all=False)
                 parsing_results.append((registration_type, parsed))
             except ParseException as error:
                 print(
