@@ -2,6 +2,7 @@
 
 # -- Imports ------------------------------------------------------------------
 
+from enum import auto, Enum
 from logging import getLogger
 from typing import Any
 
@@ -16,6 +17,52 @@ from pyparsing import (
     SkipTo,
     Suppress,
 )
+
+# -- Classes ------------------------------------------------------------------
+
+
+class RegistrationType(Enum):
+    """Possible registration types"""
+
+    PRE_REGISTRATION = auto()
+    """Pre-Registration"""
+
+    PARTICIPANT = auto()
+    """General Participant"""
+
+    SPEAKER = auto()
+    """Speaker"""
+
+    SPONSOR = auto()
+    """Sponsor"""
+
+    STUDENT = auto()
+    """Student"""
+
+    UNKOWN = auto()
+    "Unknown registration type"
+
+    def __repr__(self):
+        """Get a textual representation of the registration type
+
+        Returns:
+
+            A text representing the registration type
+
+        Examples:
+
+            Get string representation of pre-registration type
+
+            >>> RegistrationType.PRE_REGISTRATION
+            Pre-Registration
+
+        """
+
+        name = self.name
+        name = "-".join(part.capitalize() for part in name.split("_"))
+
+        return name
+
 
 # -- Functions ----------------------------------------------------------------
 
@@ -68,31 +115,49 @@ def generate_error_message(text: str, error: ParseException) -> str:
     return "\n".join(error_message)
 
 
-def convert_parse_results_data_frame(parsing_results: list[ParseResults]):
+def convert_parse_results_data_frame(
+    parsing_results: list[tuple[RegistrationType, ParseResults]],
+) -> dict[RegistrationType, DataFrame]:
     """Convert parsing data into data frame
 
     Args:
 
         parsing_results:
 
-            A list of parsing results
+            A list of tuples containing the registration type and the parsing
+            result of the mail
 
     Returns:
 
-        A data frame that stores the parsed data
+        A dictionary that stores the registration data for each registration
+        type as data frame
 
     """
 
-    registration_data: dict[str, Any] = {}
-    if len(parsing_results) >= 1:
-        for attribute in parsing_results[0].keys():
-            registration_data[attribute] = []
-        for parse_result in parsing_results:
-            for attribute, result in parse_result.items():
-                registration_data[attribute].append(result)
+    logger = getLogger(__name__)
+    registration_data: dict[RegistrationType, dict[str, Any]] = {}
 
-    getLogger(__name__).debug("Converted parsing data: %s", registration_data)
-    return DataFrame(data=registration_data)
+    logger.debug("Parsing results: %s", parsing_results)
+
+    for registration_type, registration in parsing_results:
+        if registration_data.get(registration_type) is None:
+            registration_data[registration_type] = {}
+        registration_dict = registration_data[registration_type]
+
+        for attribute, result in registration.items():
+            if registration_dict.get(attribute) is None:
+                registration_dict[attribute] = []
+            values = registration_dict.get(attribute)
+            assert isinstance(values, list)
+            values.append(result)
+
+    logger.debug("Converted parsing data: %s", registration_data)
+
+    frames: dict[RegistrationType, DataFrame] = {}
+    for registration_type, registration_dict in registration_data.items():
+        frames[registration_type] = DataFrame(data=registration_dict)
+
+    return frames
 
 
 # -- Grammar ------------------------------------------------------------------

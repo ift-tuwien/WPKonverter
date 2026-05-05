@@ -9,6 +9,7 @@ from pandas import DataFrame, ExcelWriter
 
 from wpkonverter.cli import file_exists
 from wpkonverter.parsing import parse_csv_file
+from wpkonverter.parsing.common import RegistrationType
 
 # -- Functions ----------------------------------------------------------------
 
@@ -43,7 +44,7 @@ def get_arguments() -> Namespace:
     return parser.parse_args()
 
 
-def store_data_workbook(data: DataFrame) -> None:
+def store_data_workbook(data: dict[RegistrationType, DataFrame]) -> None:
     """Store registration data in Excel file
 
     Args:
@@ -56,21 +57,28 @@ def store_data_workbook(data: DataFrame) -> None:
 
     logger = getLogger(__name__)
     filename = "wpk.xlsx"
-    sheet_name = "Pre-registration"
+
     with ExcelWriter(filename, engine="xlsxwriter") as writer:
-        data.to_excel(writer, index=False, sheet_name=sheet_name)
-        workbook = writer.book
-        worksheet = writer.sheets[sheet_name]
-        rows, columns = data.shape
+        for registration_type, registration_data in data.items():
 
-        header_format = workbook.add_format({"bold": True})
-        worksheet.set_row(0, cell_format=header_format)
+            sheet_name = repr(registration_type)
+            registration_data.to_excel(
+                writer, index=False, sheet_name=sheet_name
+            )
+            workbook = writer.book
+            worksheet = writer.sheets[sheet_name]
+            rows, columns = registration_data.shape
 
-        logger.debug("Rows: %s, Columns %s", rows, columns)
-        cell_format = workbook.add_format({"text_wrap": True, "valign": "top"})
-        for row in range(1, rows + 1):
-            worksheet.set_row(row, cell_format=cell_format)
-        writer.sheets[sheet_name].autofit()
+            header_format = workbook.add_format({"bold": True})
+            worksheet.set_row(0, cell_format=header_format)
+
+            logger.debug("Rows: %s, Columns %s", rows, columns)
+            cell_format = workbook.add_format(
+                {"text_wrap": True, "valign": "top"}
+            )
+            for row in range(1, rows + 1):
+                worksheet.set_row(row, cell_format=cell_format)
+            writer.sheets[sheet_name].autofit()
 
     print(f"Stored data in “{filename}”")
 

@@ -3,7 +3,6 @@
 # -- Imports ------------------------------------------------------------------
 
 from csv import DictReader
-from enum import auto, Enum
 from logging import getLogger
 from pathlib import Path
 from re import compile as re_pattern
@@ -19,32 +18,8 @@ from wpkonverter.parsing.pre_registration import pre_registration
 from wpkonverter.parsing.common import (
     convert_parse_results_data_frame,
     generate_error_message,
+    RegistrationType,
 )
-
-# -- Classes ------------------------------------------------------------------
-
-
-class RegistrationType(Enum):
-    """Possible registration types"""
-
-    PRE_REGISTRATION = auto()
-    """Pre-Registration"""
-
-    PARTICIPANT = auto()
-    """General Participant"""
-
-    SPEAKER = auto()
-    """Speaker"""
-
-    SPONSOR = auto()
-    """Sponsor"""
-
-    STUDENT = auto()
-    """Student"""
-
-    UNKOWN = auto()
-    "Unknown registration type"
-
 
 # -- Functions ----------------------------------------------------------------
 
@@ -85,7 +60,7 @@ def get_registration_type(subject: str) -> RegistrationType:
     return RegistrationType.UNKOWN
 
 
-def parse_csv_file(filepath: Path) -> DataFrame:
+def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
     """Parse CSV mails for registration data
 
     Args:
@@ -101,8 +76,9 @@ def parse_csv_file(filepath: Path) -> DataFrame:
     """
 
     logger = getLogger(__name__)
+    type_to_grammar = {RegistrationType.PRE_REGISTRATION: pre_registration}
 
-    pre_registration_parsing_results: list[ParseResults] = []
+    parsing_results: list[tuple[RegistrationType, ParseResults]] = []
     with open(filepath, newline="", encoding="utf-8-sig") as csvfile:
         reader = DictReader(csvfile)
 
@@ -110,15 +86,20 @@ def parse_csv_file(filepath: Path) -> DataFrame:
             logger.debug("Row: %s", row)
             registration_type = get_registration_type(row["Betreff"])
             logger.debug("Registration type: %s", registration_type)
+            grammar = type_to_grammar.get(registration_type)
+            if grammar is None:
+                print(
+                    f"No grammar for registration type “{registration_type}” "
+                    f"of mail {mail_number}",
+                    file=stderr,
+                )
+                continue
+
             text = row["Text"]
             logger.debug("Mail text: %s", text)
             try:
-                match registration_type:
-                    case RegistrationType.PRE_REGISTRATION:
-                        parser_results = pre_registration.parse_string(
-                            text, parse_all=True
-                        )
-                        pre_registration_parsing_results.append(parser_results)
+                parsed = grammar.parse_string(text, parse_all=True)
+                parsing_results.append((registration_type, parsed))
             except ParseException as error:
                 print(
                     f"Unable to parse data in mail {mail_number}:\n\n"
@@ -127,4 +108,4 @@ def parse_csv_file(filepath: Path) -> DataFrame:
                 )
                 continue
 
-    return convert_parse_results_data_frame(pre_registration_parsing_results)
+    return convert_parse_results_data_frame(parsing_results)
