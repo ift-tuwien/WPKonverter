@@ -3,7 +3,16 @@
 # -- Imports ------------------------------------------------------------------
 
 
-from pyparsing import Keyword, SkipTo, Suppress, Word
+from pyparsing import (
+    Combine,
+    Keyword,
+    nums,
+    Optional,
+    printables,
+    SkipTo,
+    Suppress,
+    Word,
+)
 
 from wpkonverter.parsing.common import (
     between,
@@ -33,7 +42,12 @@ subject = between(subject_start, speaker_start, "Subject")
 speaker = between(speaker_start, organization_start, "Speaker")
 organization = between(organization_start, position_start, "Organization")
 position = between(position_start, contact_start, "Position")
-contact = between(contact_start, program_points_start, "Contact")
+mail_part = Word(printables, exclude_chars=",{}@")
+contact_mail_text = Combine(mail_part + "@" + mail_part)
+contact_mail = contact_start + contact_mail_text("Mail Address")
+contact_telephone_number = Combine(Optional("+") + Word(nums + "/"))
+contact = contact_mail + contact_telephone_number("Telephone Number")
+
 program_points = between(
     program_points_start, companion_start, "Program Points"
 )
