@@ -68,12 +68,6 @@ class RegistrationType(Enum):
 # -- Functions ----------------------------------------------------------------
 
 
-def rstrip(tokens: ParseResults) -> str:
-    """Remove trailing whitespace from input"""
-
-    return tokens[0].rstrip()
-
-
 def strip(tokens: ParseResults) -> str:
     """Remove leading and trailing whitespace from input"""
 

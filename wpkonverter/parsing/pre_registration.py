@@ -3,13 +3,13 @@
 # -- Imports ------------------------------------------------------------------
 
 
-from pyparsing import Combine, Keyword, SkipTo, Suppress
+from pyparsing import Keyword, Suppress
 
 from wpkonverter.parsing.common import (
+    between,
     from_,
     organization_start,
     participant_start,
-    rstrip,
     strip,
     subject_start,
 )
@@ -30,47 +30,16 @@ end_mail = Suppress(
     )
 )
 
-# ===========
-# = Subject =
-# ===========
-
-text_subject = SkipTo(participant_start).set_parse_action(rstrip)
-subject = subject_start + text_subject("Subject")
-
-# ===============
-# = Participant =
-# ===============
-
-text_participant = SkipTo(organization_start).set_parse_action(rstrip)
-participant = participant_start + text_participant("Participant")
-
-# ================
-# = Organization =
-# ================
-
-text_organization = SkipTo(contact_start).set_parse_action(rstrip)
-organization = organization_start + text_organization("Organization")
-
-# ===========
-# = Contact =
-# ===========
-
-text_contact = SkipTo(sponsor_start).set_parse_action(rstrip)
-contact = contact_start + text_contact("Contact")
-
-# ===========
-# = Sponsor =
-# ===========
-
-text_sponsor = SkipTo(message_start).set_parse_action(rstrip)
-sponsor = sponsor_start + text_sponsor("Sponsor")
-
-# ===========
-# = Message =
-# ===========
-
-text_message = Combine(SkipTo(end)).set_parse_action(strip)
-message = message_start + text_message("Message")
+subject = between(subject_start, participant_start, "Subject", strip)
+participant = between(
+    participant_start, organization_start, "Participant", strip
+)
+organization = between(
+    organization_start, contact_start, "Organization", strip
+)
+contact = between(contact_start, sponsor_start, "Contact", strip)
+sponsor = between(sponsor_start, message_start, "Sponsor", strip)
+message = between(message_start, end, "Message", strip)
 
 pre_registration = (
     from_

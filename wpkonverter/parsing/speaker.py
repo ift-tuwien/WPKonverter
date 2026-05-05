@@ -3,12 +3,13 @@
 # -- Imports ------------------------------------------------------------------
 
 
-from pyparsing import Keyword, SkipTo, Suppress
+from pyparsing import Keyword, Suppress
 
 from wpkonverter.parsing.common import (
+    between,
     from_,
     organization_start,
-    rstrip,
+    strip,
     subject_start,
     speaker_start,
 )
@@ -17,29 +18,10 @@ from wpkonverter.parsing.common import (
 
 position_start = Suppress(Keyword("Position:"))
 
-# ===========
-# = Subject =
-# ===========
-
-text_subject = SkipTo(speaker_start).set_parse_action(rstrip)
-subject = subject_start + text_subject("Subject")
-
-# ===========
-# = Speaker =
-# ===========
-
-text_speaker = SkipTo(organization_start).set_parse_action(rstrip)
-speaker = speaker_start + text_speaker("Speaker")
-
-# ================
-# = Organization =
-# ================
-
-text_organization = SkipTo(position_start).set_parse_action(rstrip)
-organization = organization_start + text_organization("Organization")
-
-# ===========
-# = Grammar =
-# ===========
+subject = between(subject_start, speaker_start, "Subject", strip)
+speaker = between(speaker_start, organization_start, "Speaker", strip)
+organization = between(
+    organization_start, position_start, "Organization", strip
+)
 
 speaker_registration = from_ + subject + speaker + organization
