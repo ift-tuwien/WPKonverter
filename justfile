@@ -27,9 +27,14 @@ check: setup
 	uv run flake8
 	uv run pylint .
 
+# Run tests
+[default]
+[group('test')]
+test: check
+	uv run pytest .
+
 # Execute script on sample data
 [group('run')]
-[default]
 run: check
 	uv run "{{command}}" "{{input}}"
 

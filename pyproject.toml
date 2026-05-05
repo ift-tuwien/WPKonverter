@@ -37,6 +37,7 @@ dev = [
     "mypy>=1.19,<1.20",
     "myst-parser>=5",
     "pylint>=4.0.5",
+    "pytest>=9",
     "sphinx>=9.1.0,<10",
     "sphinx-pyproject>=0.3",
     "sphinx_rtd_theme",
@@ -78,3 +79,9 @@ ignore_missing_imports = true
 
 [tool.pylint]
 ignore-paths = [ ".venv/.*$" ]
+
+[tool.pytest]
+addopts = [
+  "--doctest-modules",
+  "--verbose",
+]
