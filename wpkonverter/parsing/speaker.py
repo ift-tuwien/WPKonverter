@@ -17,7 +17,10 @@ from pyparsing import (
 from wpkonverter.parsing.common import (
     between,
     contact_start,
+    footer,
+    footer_start,
     from_,
+    message_start,
     organization_start,
     subject_start,
     speaker_start,
@@ -34,7 +37,7 @@ companion_start = Suppress(Keyword("Begleitperson:"))
 companion_organization_start = Suppress(
     Keyword("Unternehmen/Bildungsinstitut (wenn vorhanden):")
 )
-program_points_companion_start = Suppress(
+companion_program_points_start = Suppress(
     Keyword("Die Begleitperson nimmt an folgenden Programmpunkten  teil:")
 )
 
@@ -59,9 +62,13 @@ companion_name_text = SkipTo(companion_organization_start).set_parse_action(
 companion_name = companion_name_text("Companion (Name)")
 companion_organization = between(
     companion_organization_start,
-    program_points_companion_start,
+    companion_program_points_start,
     "Organization (Companion)",
 )
+companion_program_points = between(
+    companion_program_points_start, message_start, "Program Points (Companion)"
+)
+message = between(message_start, footer_start, "Message")
 
 speaker_registration = (
     from_
@@ -74,4 +81,8 @@ speaker_registration = (
     + companion
     + companion_name
     + companion_organization
+    + companion_program_points
+    + message
+    + footer_start
+    + footer
 )

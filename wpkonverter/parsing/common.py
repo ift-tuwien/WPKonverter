@@ -205,6 +205,15 @@ sponsor_start = Suppress(Keyword("Sponsoren:"))
 
 organization_start = Suppress(Keyword("Unternehmen/ Bildungsinstitut:"))
 contact_start = Suppress(Keyword("Kontakt:"))
+message_start = Suppress(Keyword("Nachricht:"))
+footer_start = Suppress(Keyword("--"))
+footer = Suppress(
+    Keyword(
+        "This is a notification that a contact form was submitted on your"
+        " website (Wiener Produktionstechnik-Kongress"
+        " https://wpk.conf.tuwien.ac.at)."
+    )
+)
 
 # ========
 # = From =

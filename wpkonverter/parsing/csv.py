@@ -102,7 +102,7 @@ def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
             text = row["Text"]
             logger.debug("Mail text: %s", text)
             try:
-                parsed = grammar.parse_string(text, parse_all=False)
+                parsed = grammar.parse_string(text, parse_all=True)
                 parsing_results.append((registration_type, parsed))
             except ParseException as error:
                 print(
