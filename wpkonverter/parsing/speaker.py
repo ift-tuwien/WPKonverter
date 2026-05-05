@@ -10,7 +10,6 @@ from wpkonverter.parsing.common import (
     contact_start,
     from_,
     organization_start,
-    strip,
     subject_start,
     speaker_start,
 )
@@ -19,11 +18,9 @@ from wpkonverter.parsing.common import (
 
 position_start = Suppress(Keyword("Position:"))
 
-subject = between(subject_start, speaker_start, "Subject", strip)
-speaker = between(speaker_start, organization_start, "Speaker", strip)
-organization = between(
-    organization_start, position_start, "Organization", strip
-)
-position = between(position_start, contact_start, "Position", strip)
+subject = between(subject_start, speaker_start, "Subject")
+speaker = between(speaker_start, organization_start, "Speaker")
+organization = between(organization_start, position_start, "Organization")
+position = between(position_start, contact_start, "Position")
 
 speaker_registration = from_ + subject + speaker + organization + position

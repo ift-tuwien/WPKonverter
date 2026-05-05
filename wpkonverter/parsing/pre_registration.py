@@ -11,7 +11,6 @@ from wpkonverter.parsing.common import (
     from_,
     organization_start,
     participant_start,
-    strip,
     subject_start,
 )
 
@@ -30,16 +29,12 @@ end_mail = Suppress(
     )
 )
 
-subject = between(subject_start, participant_start, "Subject", strip)
-participant = between(
-    participant_start, organization_start, "Participant", strip
-)
-organization = between(
-    organization_start, contact_start, "Organization", strip
-)
-contact = between(contact_start, sponsor_start, "Contact", strip)
-sponsor = between(sponsor_start, message_start, "Sponsor", strip)
-message = between(message_start, end, "Message", strip)
+subject = between(subject_start, participant_start, "Subject")
+participant = between(participant_start, organization_start, "Participant")
+organization = between(organization_start, contact_start, "Organization")
+contact = between(contact_start, sponsor_start, "Contact")
+sponsor = between(sponsor_start, message_start, "Sponsor")
+message = between(message_start, end, "Message")
 
 pre_registration = (
     from_

@@ -4,7 +4,7 @@
 
 from enum import auto, Enum
 from logging import getLogger
-from typing import Any, Callable
+from typing import Any
 
 from pandas import DataFrame
 from pyparsing import (
@@ -159,7 +159,6 @@ def between(
     start: ParserElement,
     end: ParserElement,
     attribute: str | None = None,
-    action: Callable[[ParseResults], str] | None = None,
 ):
     """Get parser element that parses text between two parser elements
 
@@ -178,11 +177,6 @@ def between(
             The attribute (name) that stores the data between ``start`` and
             ``end``.
 
-        action:
-
-            The parser action that should be applied to the text between
-            ``start`` and ``end``.
-
     Returns:
 
         A parser that consumes data between ``start`` (inclusive) and ``end``
@@ -190,9 +184,7 @@ def between(
 
     """
 
-    text: ParserElement = SkipTo(end)
-    if action is not None:
-        text = text.set_parse_action(action)
+    text: ParserElement = SkipTo(end).set_parse_action(strip)
     if attribute is not None:
         text = text.set_results_name(attribute)
     return start + text
