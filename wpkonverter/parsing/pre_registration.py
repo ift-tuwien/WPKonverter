@@ -7,6 +7,7 @@ from pyparsing import Keyword, Suppress
 
 from wpkonverter.parsing.common import (
     between,
+    contact_start,
     from_,
     organization_start,
     participant_start,
@@ -16,7 +17,6 @@ from wpkonverter.parsing.common import (
 
 # -- Grammar ------------------------------------------------------------------
 
-contact_start = Suppress(Keyword("Kontakt:"))
 sponsor_start = Suppress(
     Keyword("Sind Sie daran interessiert, Sponsor oder Redner zu werden?:")
 )

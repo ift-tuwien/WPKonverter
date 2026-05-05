@@ -212,6 +212,7 @@ speaker_start = Suppress(
 sponsor_start = Suppress(Keyword("Sponsoren:"))
 
 organization_start = Suppress(Keyword("Unternehmen/ Bildungsinstitut:"))
+contact_start = Suppress(Keyword("Kontakt:"))
 
 # ========
 # = From =

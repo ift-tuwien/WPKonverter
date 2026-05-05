@@ -7,6 +7,7 @@ from pyparsing import Keyword, Suppress
 
 from wpkonverter.parsing.common import (
     between,
+    contact_start,
     from_,
     organization_start,
     strip,
@@ -23,5 +24,6 @@ speaker = between(speaker_start, organization_start, "Speaker", strip)
 organization = between(
     organization_start, position_start, "Organization", strip
 )
+position = between(position_start, contact_start, "Position", strip)
 
-speaker_registration = from_ + subject + speaker + organization
+speaker_registration = from_ + subject + speaker + organization + position
