@@ -85,3 +85,6 @@ addopts = [
   "--doctest-modules",
   "--verbose",
 ]
+testpaths = [
+  "test"
+]
