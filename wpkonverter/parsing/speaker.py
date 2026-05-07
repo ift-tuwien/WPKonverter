@@ -26,6 +26,9 @@ from wpkonverter.parsing.common import (
     speaker_start,
     strip,
 )
+from wpkonverter.parsing.program_point import (
+    program_points as program_points_text,
+)
 
 # -- Grammar ------------------------------------------------------------------
 
@@ -50,10 +53,7 @@ contact_mail_text = Combine(mail_part + "@" + mail_part)
 contact_mail = contact_start + contact_mail_text("Mail Address")
 contact_telephone_number = Combine(Optional("+") + Word(nums + "/"))
 contact = contact_mail + contact_telephone_number("Telephone Number")
-
-program_points = between(
-    program_points_start, companion_start, "Program Points"
-)
+program_points = program_points_start + program_points_text("Program Points")
 companion_choice = Word("nein") ^ Word("ja")
 companion = companion_start + companion_choice("Companion")
 companion_name_text = SkipTo(companion_organization_start).set_parse_action(
@@ -65,8 +65,9 @@ companion_organization = between(
     companion_program_points_start,
     "Organization (Companion)",
 )
-companion_program_points = between(
-    companion_program_points_start, message_start, "Program Points (Companion)"
+companion_program_points = (
+    companion_program_points_start
+    + program_points_text("Program Points (Companion)")
 )
 message = between(message_start, footer_start, "Message")
 

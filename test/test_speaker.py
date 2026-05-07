@@ -9,7 +9,7 @@ from wpkonverter.parsing.speaker import speaker_registration
 # -- Tests --------------------------------------------------------------------
 
 
-def test_pre_registration(checkers):
+def test_speaker_registration(checkers):
     """Try to parse example pre-registration data"""
 
     filepath = Path(__file__).parent / "data" / "speaker.txt"
@@ -25,9 +25,10 @@ def test_pre_registration(checkers):
             "Organization (Companion)": "Nein",
             "Position": "Head",
             "Program Points": (
-                "Dienstag 6.10.2026 - Come Together, Mittwoch 7.10.2026 - 1."
-                " Kongresstag, Mittwoch 7.10.2026 - Galadinner, Donnerstag"
-                " 8.10.2026 - 2. Kongresstag"
+                "• 6.10.2026 (Come Together)\n"
+                "• 7.10.2026 (1. Kongresstag)\n"
+                "• 7.10.2026 (Galadinner)\n"
+                "• 8.10.2026 (2. Kongresstag)"
             ),
             "Program Points (Companion)": "",
             "Speaker": "Speaker Speaker, Prof.Dr.",

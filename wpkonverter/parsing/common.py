@@ -132,9 +132,9 @@ def convert_parse_results_data_frame(
     logger = getLogger(__name__)
     registration_data: dict[RegistrationType, dict[str, Any]] = {}
 
-    logger.debug("Parsing results: %s", parsing_results)
-
     for registration_type, registration in parsing_results:
+        logger.debug("Registration type: %s", registration_type)
+        logger.debug("Registration data: %s", registration.as_dict())
         if registration_data.get(registration_type) is None:
             registration_data[registration_type] = {}
         registration_dict = registration_data[registration_type]
