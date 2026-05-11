@@ -33,9 +33,7 @@ def test_program_point():
     parsed_list = parsed.as_list()
     assert len(parsed_list) == 1
     assert isinstance(parsed_list[0], ProgramPoint)
-    assert parsed_list[0] == ProgramPoint(
-        [datetime.strptime("6.10.2026", "%d.%m.%Y"), "Come Together"]
-    )
+    assert parsed_list[0] == ProgramPoint(["6.10.2026", "Come Together"])
 
 
 def test_program_points():

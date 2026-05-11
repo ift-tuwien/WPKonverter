@@ -34,7 +34,11 @@ class ProgramPoint:
 
         """
 
-        self.date = tokens[0]
+        self.date = (
+            tokens[0]
+            if isinstance(tokens[0], datetime)
+            else datetime.strptime(tokens[0], "%d.%m.%Y")
+        )
         if len(tokens) >= 2:
             self.description = tokens[1]
 
@@ -43,7 +47,7 @@ class ProgramPoint:
 
         Examples:
 
-            >>> date = datetime.strptime("4.5.2006", "%d.%m.%Y")
+            >>> date = "4.5.2006"
 
             The same program points are equal
 
@@ -74,8 +78,7 @@ class ProgramPoint:
 
             Print the representation of a simple program point
 
-            >>> ProgramPoint([datetime.strptime("1.1.1970", "%d.%m.%Y"),
-            ...               "Party"])
+            >>> ProgramPoint(["1.1.1970", "Party"])
             01.01.1970 (Party)
 
         """
