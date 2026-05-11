@@ -24,10 +24,10 @@ def test_speaker_registration1(checkers):
             "Mail Address": "speakerxcy001@speaker.com",
             "Telephone Number": "0123/456789",
             "Program Points": (
-                "• 6.10.2026 (Come Together)\n"
-                "• 7.10.2026 (1. Kongresstag)\n"
-                "• 7.10.2026 (Galadinner)\n"
-                "• 8.10.2026 (2. Kongresstag)"
+                "• 06.10.2026 (Come Together)\n"
+                "• 07.10.2026 (1. Kongresstag)\n"
+                "• 07.10.2026 (Galadinner)\n"
+                "• 08.10.2026 (2. Kongresstag)"
             ),
             "Companion": "ja",
             "Companion (Name)": "Speaker+1 Speaker+1",
@@ -52,11 +52,11 @@ def test_speaker_registration2(checkers):
             "Position": "",
             "Mail Address": "test.speaker@some.company.com",
             "Telephone Number": "+555 123",
-            "Program Points": "• 7.10.2026 (Congress Day 1)",
+            "Program Points": "• 07.10.2026 (Congress Day 1)",
             "Companion": "nein",
             "Companion (Name)": "Company Asset",
             "Organization (Companion)": "",
-            "Program Points (Companion)": "• 6.10.2026 (Come Together)",
+            "Program Points (Companion)": "• 06.10.2026 (Come Together)",
             "Message": "This is speaker registration test data.",
         },
     )
@@ -77,15 +77,15 @@ def test_speaker_registration3(checkers):
             "Mail Address": "miksch@ift.at",
             "Telephone Number": "+43000000000",
             "Program Points": (
-                "• 7.10.2026 (1. Kongresstag)\n"
-                "• 7.10.2026 (Galadinner)\n"
-                "• 8.10.2026 (2. Kongresstag)"
+                "• 07.10.2026 (1. Kongresstag)\n"
+                "• 07.10.2026 (Galadinner)\n"
+                "• 08.10.2026 (2. Kongresstag)"
             ),
             "Companion": "ja",
             "Companion (Name)": "Test 1 Begleitung",
             "Organization (Companion)": "Test Uni",
             "Program Points (Companion)": (
-                "• 6.10.2026 (Come Together)\n• 7.10.2026 (Galadinner)"
+                "• 06.10.2026 (Come Together)\n• 07.10.2026 (Galadinner)"
             ),
             "Message": "kein Kommentar",
         },

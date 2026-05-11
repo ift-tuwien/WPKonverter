@@ -2,6 +2,8 @@
 
 # -- Imports ------------------------------------------------------------------
 
+from datetime import datetime
+
 from pyparsing import (
     CharsNotIn,
     Combine,
@@ -41,16 +43,18 @@ class ProgramPoint:
 
         Examples:
 
+            >>> date = datetime.strptime("4.5.2006", "%d.%m.%Y")
+
             The same program points are equal
 
-            >>> (ProgramPoint(["4.5.2006", "Dinner"]) ==
-            ...  ProgramPoint(["4.5.2006", "Dinner"]))
+            >>> (ProgramPoint([date, "Dinner"]) ==
+            ...  ProgramPoint([date, "Dinner"]))
             True
 
             Different program points are not equal
 
-            >>> (ProgramPoint(["4.5.2006", "Dinner"]) ==
-            ...  ProgramPoint(["4.5.2006", "Supper"]))
+            >>> (ProgramPoint([date, "Dinner"]) ==
+            ...  ProgramPoint([date, "Supper"]))
             False
 
         """
@@ -70,12 +74,13 @@ class ProgramPoint:
 
             Print the representation of a simple program point
 
-            >>> ProgramPoint(["1.1.1970", "Party"])
-            1.1.1970 (Party)
+            >>> ProgramPoint([datetime.strptime("1.1.1970", "%d.%m.%Y"),
+            ...               "Party"])
+            01.01.1970 (Party)
 
         """
 
-        representation = self.date
+        representation = self.date.strftime("%d.%m.%Y")
         if self.description is not None:
             representation += f" ({self.description})"
 
@@ -101,12 +106,14 @@ weekday = (
     | Keyword("Sunday")
 )
 integer = Word(nums)
-date = Combine(integer + "." + integer + "." + integer)
+date = Combine(integer + "." + integer + "." + integer).set_parse_action(
+    lambda token: datetime.strptime(token[0], "%d.%m.%Y")
+)
 program_point_description = CharsNotIn(",\r\n").set_parse_action(strip)
 program_point = (
-    Optional(Suppress(weekday))
+    Suppress(Optional(weekday))
     + date
-    + Optional(Suppress("-"))
+    + Suppress(Optional("-"))
     + program_point_description
 ).set_parse_action(ProgramPoint)
 
