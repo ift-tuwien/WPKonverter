@@ -3,6 +3,7 @@
 # -- Import -------------------------------------------------------------------
 
 from logging import getLogger
+from pathlib import Path
 
 from pandas import DataFrame, ExcelWriter
 
@@ -11,7 +12,9 @@ from wpkonverter.parsing.csv import RegistrationType
 # -- Functions ----------------------------------------------------------------
 
 
-def store_data_workbook(data: dict[RegistrationType, DataFrame]) -> None:
+def store_data_workbook(
+    data: dict[RegistrationType, DataFrame], filepath: Path
+) -> None:
     """Store registration data in Excel file
 
     Args:
@@ -20,12 +23,15 @@ def store_data_workbook(data: dict[RegistrationType, DataFrame]) -> None:
 
             The registration data that should be stored in the Excel file
 
+        filepath:
+
+            The location of the Excel file that should store the data
+
     """
 
     logger = getLogger(__name__)
-    filename = "wpk.xlsx"
 
-    with ExcelWriter(filename, engine="xlsxwriter") as writer:
+    with ExcelWriter(filepath, engine="xlsxwriter") as writer:
         for registration_type, registration_data in data.items():
 
             sheet_name = repr(registration_type)
@@ -46,5 +52,3 @@ def store_data_workbook(data: dict[RegistrationType, DataFrame]) -> None:
             for row in range(1, rows + 1):
                 worksheet.set_row(row, cell_format=cell_format)
             writer.sheets[sheet_name].autofit()
-
-    print(f"Stored data in “{filename}”")

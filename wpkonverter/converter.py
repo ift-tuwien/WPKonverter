@@ -2,11 +2,31 @@
 
 # -- Import -------------------------------------------------------------------
 
+from pathlib import Path
 from logging import basicConfig, getLogger
+from sys import exit as sys_exit, stderr
 
 from wpkonverter.cli import get_arguments
 from wpkonverter.excel import store_data_workbook
 from wpkonverter.parsing import parse_csv_file
+
+# -- Functions ----------------------------------------------------------------
+
+
+def exit_error(message: str) -> None:
+    """Exit the program with an error status
+
+    Args:
+
+        message:
+
+            The message that should be printed to `stderr` as error reason
+
+    """
+
+    print(message, file=stderr)
+    sys_exit(1)
+
 
 # -- Main ---------------------------------------------------------------------
 
@@ -26,8 +46,13 @@ def main() -> None:
     logger = getLogger(__name__)
     logger.info("CLI Arguments: %s", arguments)
 
+    input_filepath = Path(arguments.filepath)
+
     try:
-        parsed_mails = parse_csv_file(arguments.filepath)
-        store_data_workbook(parsed_mails)
+        parsed_mails = parse_csv_file(input_filepath)
     except UnicodeDecodeError as error:
-        print(f"Unable to read file “{arguments.filepath}”: {error}")
+        exit_error(f"Unable to read file “{input_filepath}”: {error}")
+
+    output_filepath = input_filepath.with_suffix(".xlsx")
+    store_data_workbook(parsed_mails, output_filepath)
+    print(f"Stored data in “{output_filepath}”")
