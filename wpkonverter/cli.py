@@ -2,7 +2,7 @@
 
 # -- Imports ------------------------------------------------------------------
 
-from argparse import ArgumentTypeError
+from argparse import ArgumentParser, ArgumentTypeError, Namespace
 from pathlib import Path
 
 # -- Functions ----------------------------------------------------------------
@@ -36,3 +36,33 @@ def file_exists(filepath: str) -> str:
         raise ArgumentTypeError(f"“{filepath}” does not point to a file")
 
     return filepath
+
+
+def get_arguments() -> Namespace:
+    """Parse command line arguments
+
+    Returns:
+
+        An object that contains the given command line arguments
+
+    """
+
+    parser = ArgumentParser(
+        description="Extract data from WPK registration mails"
+    )
+
+    parser.add_argument(
+        "--log",
+        choices=("debug", "info", "warning", "error", "critical"),
+        default="warning",
+        required=False,
+        help="minimum log level",
+    )
+
+    parser.add_argument(
+        "filepath",
+        type=file_exists,
+        help="WPK mail information in CSV format",
+    )
+
+    return parser.parse_args()

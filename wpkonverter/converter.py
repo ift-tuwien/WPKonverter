@@ -2,46 +2,15 @@
 
 # -- Import -------------------------------------------------------------------
 
-from argparse import ArgumentParser, Namespace
 from logging import basicConfig, getLogger
 
 from pandas import DataFrame, ExcelWriter
 
-from wpkonverter.cli import file_exists
+from wpkonverter.cli import get_arguments
 from wpkonverter.parsing import parse_csv_file
 from wpkonverter.parsing.csv import RegistrationType
 
 # -- Functions ----------------------------------------------------------------
-
-
-def get_arguments() -> Namespace:
-    """Parse command line arguments
-
-    Returns:
-
-        An object that contains the given command line arguments
-
-    """
-
-    parser = ArgumentParser(
-        description="Extract data from WPK registration mails"
-    )
-
-    parser.add_argument(
-        "--log",
-        choices=("debug", "info", "warning", "error", "critical"),
-        default="warning",
-        required=False,
-        help="minimum log level",
-    )
-
-    parser.add_argument(
-        "filepath",
-        type=file_exists,
-        help="WPK mail information in CSV format",
-    )
-
-    return parser.parse_args()
 
 
 def store_data_workbook(data: dict[RegistrationType, DataFrame]) -> None:
