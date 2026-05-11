@@ -25,9 +25,9 @@ def test_speaker_registration1(checkers):
             "Telephone Number": "0123/456789",
             "Program Points": (
                 "• 06.10.2026 (Come Together)\n"
-                "• 07.10.2026 (1. Kongresstag)\n"
-                "• 07.10.2026 (Galadinner)\n"
-                "• 08.10.2026 (2. Kongresstag)"
+                "• 07.10.2026 (Congress Day 1)\n"
+                "• 07.10.2026 (Gala Dinner)\n"
+                "• 08.10.2026 (Congress Day 2)"
             ),
             "Companion": "ja",
             "Companion (Name)": "Speaker+1 Speaker+1",
@@ -77,15 +77,15 @@ def test_speaker_registration3(checkers):
             "Mail Address": "miksch@ift.at",
             "Telephone Number": "+43000000000",
             "Program Points": (
-                "• 07.10.2026 (1. Kongresstag)\n"
-                "• 07.10.2026 (Galadinner)\n"
-                "• 08.10.2026 (2. Kongresstag)"
+                "• 07.10.2026 (Congress Day 1)\n"
+                "• 07.10.2026 (Gala Dinner)\n"
+                "• 08.10.2026 (Congress Day 2)"
             ),
             "Companion": "ja",
             "Companion (Name)": "Test 1 Begleitung",
             "Organization (Companion)": "Test Uni",
             "Program Points (Companion)": (
-                "• 06.10.2026 (Come Together)\n• 07.10.2026 (Galadinner)"
+                "• 06.10.2026 (Come Together)\n• 07.10.2026 (Gala Dinner)"
             ),
             "Message": "kein Kommentar",
         },

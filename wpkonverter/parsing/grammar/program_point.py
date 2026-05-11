@@ -3,6 +3,7 @@
 # -- Imports ------------------------------------------------------------------
 
 from datetime import datetime
+from re import sub
 
 from pyparsing import (
     CharsNotIn,
@@ -39,8 +40,9 @@ class ProgramPoint:
             if isinstance(tokens[0], datetime)
             else datetime.strptime(tokens[0], "%d.%m.%Y")
         )
-        if len(tokens) >= 2:
-            self.description = tokens[1]
+        self.description = tokens[1]
+
+        self._unify_description()
 
     def __eq__(self, other):
         """Check if two program points are equal
@@ -88,6 +90,29 @@ class ProgramPoint:
             representation += f" ({self.description})"
 
         return representation
+
+    def _unify_description(self) -> None:
+        """Unify program point description
+
+        Examples:
+
+            Compare equal program points in different languages
+
+            >>> (ProgramPoint(["6.10.2026", "Congress Day 1"]) ==
+            ...  ProgramPoint(["6.10.2026", "1. Kongresstag"]))
+            True
+
+            Check the English description of a German program point
+
+            >>> ProgramPoint(["11.5.2026", "Galadinner"])
+            11.05.2026 (Gala Dinner)
+
+        """
+
+        self.description = sub(
+            r"(\d+)\. Kongresstag", r"Congress Day \1", self.description
+        )
+        self.description = sub(r"Galadinner", "Gala Dinner", self.description)
 
 
 # -- Grammar ------------------------------------------------------------------
