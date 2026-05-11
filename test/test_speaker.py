@@ -60,3 +60,33 @@ def test_speaker_registration2(checkers):
             "Message": "This is speaker registration test data.",
         },
     )
+
+
+def test_speaker_registration3(checkers):
+    """Try to parse third pre-registration data example"""
+
+    filepath = Path(__file__).parent / "data" / "speaker3.txt"
+    checkers.check_grammar(
+        speaker_registration,
+        filepath,
+        {
+            "Subject": "Speaker Anmeldung WPK2026",
+            "Speaker": "Speaker Test 1, BM",
+            "Organization": "Test Uni",
+            "Position": "BM",
+            "Mail Address": "miksch@ift.at",
+            "Telephone Number": "+43000000000",
+            "Program Points": (
+                "• 7.10.2026 (1. Kongresstag)\n"
+                "• 7.10.2026 (Galadinner)\n"
+                "• 8.10.2026 (2. Kongresstag)"
+            ),
+            "Companion": "ja",
+            "Companion (Name)": "Test 1 Begleitung",
+            "Organization (Companion)": "Test Uni",
+            "Program Points (Companion)": (
+                "• 6.10.2026 (Come Together)\n• 7.10.2026 (Galadinner)"
+            ),
+            "Message": "kein Kommentar",
+        },
+    )
