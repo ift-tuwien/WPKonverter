@@ -127,12 +127,28 @@ def get_registration_type(subject: str) -> RegistrationType:
 
         The type of the mail registration
 
+    Examples:
+
+        Get type for student registration
+
+        >>> subject = ("Wiener Produktionstechnik-Kongress „Studierende "
+        ...            "Anmeldung WPK2026“")
+        >>> get_registration_type(subject)
+        Student
+
+        Get type for participant registration
+
+        >>> subject = ("Wiener Produktionstechnik-Kongress „TeilnehmerIn "
+        ...            "Anmeldung WPK2026“")
+        >>> get_registration_type(subject)
+        Participant
+
     """
 
     pattern_to_type = (
         (re_pattern("Vorregistrierung"), RegistrationType.PRE_REGISTRATION),
         (
-            re_pattern(r"(Participant|TeilnehmerIn) registration"),
+            re_pattern(r"Participant|Teilnehmer"),
             RegistrationType.PARTICIPANT,
         ),
         (
@@ -140,7 +156,7 @@ def get_registration_type(subject: str) -> RegistrationType:
             RegistrationType.SPEAKER,
         ),
         (re_pattern("Sponsoren Anmeldung"), RegistrationType.SPONSOR),
-        (re_pattern("Student registration"), RegistrationType.STUDENT),
+        (re_pattern("Student|Studierende"), RegistrationType.STUDENT),
     )
 
     for pattern, registration_type in pattern_to_type:
@@ -177,7 +193,8 @@ def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
 
         for mail_number, row in enumerate(reader, start=1):
             logger.debug("Row: %s", row)
-            registration_type = get_registration_type(row["Betreff"])
+            subject = row["Betreff"]
+            registration_type = get_registration_type(subject)
             logger.debug("Registration type: %s", registration_type)
             grammar = type_to_grammar.get(registration_type)
             if grammar is None:
