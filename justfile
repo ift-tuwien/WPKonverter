@@ -36,7 +36,7 @@ test: check
 # Execute script on sample data
 [group('run')]
 run: check
-	uv run "{{command}}" --log debug "{{input}}"
+	uv run "{{command}}" "{{input}}"
 
 # Release new package version
 [group('release')]
