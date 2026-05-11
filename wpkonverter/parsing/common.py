@@ -192,11 +192,11 @@ def between(
 
 # -- Grammar ------------------------------------------------------------------
 
-from_start = Suppress(Keyword("Von:") ^ Keyword("From:"))
-subject_start = Suppress(Keyword("Betreff:") ^ Keyword("Subject:"))
+from_start = Suppress(Keyword("Von:") | Keyword("From:"))
+subject_start = Suppress(Keyword("Betreff:") | Keyword("Subject:"))
 
 participant_start = Suppress(
-    Keyword("Teilnehmerin/Teilnehmer:") ^ Keyword("Participant:")
+    Keyword("Teilnehmerin/Teilnehmer:") | Keyword("Participant:")
 )
 speaker_start = Suppress(
     Optional(Keyword("Speakerinnen/")) + Keyword("Speaker:")
