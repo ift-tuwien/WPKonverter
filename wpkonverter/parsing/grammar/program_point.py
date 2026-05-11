@@ -73,6 +73,28 @@ class ProgramPoint:
 
         return NotImplemented
 
+    def __hash__(self) -> int:
+        """Get hash value of program point
+
+        Returns:
+
+            The hash value of the program point
+
+        Examples:
+
+            Check if two sets containing the same program points are equal
+
+            >>> ({ProgramPoint(["1.1.1970", "Something"]),
+            ...   ProgramPoint(["1.1.1970", "Something"]),
+            ...   ProgramPoint(["2.1.1970", "Something"])} ==
+            ...  {ProgramPoint(["2.1.1970", "Something"]),
+            ...   ProgramPoint(["1.1.1970", "Something"])})
+            True
+
+        """
+
+        return hash((self.date, self.description))
+
     def __repr__(self):
         """Return a textual representation of the program point
 
