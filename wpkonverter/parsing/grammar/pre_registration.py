@@ -5,7 +5,7 @@
 
 from pyparsing import Keyword, Suppress
 
-from wpkonverter.parsing.common import (
+from wpkonverter.parsing.grammar.common import (
     between,
     contact_start,
     footer,

@@ -9,7 +9,7 @@ from pandas import DataFrame, ExcelWriter
 
 from wpkonverter.cli import file_exists
 from wpkonverter.parsing import parse_csv_file
-from wpkonverter.parsing.common import RegistrationType
+from wpkonverter.parsing.csv import RegistrationType
 
 # -- Functions ----------------------------------------------------------------
 

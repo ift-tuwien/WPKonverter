@@ -14,7 +14,7 @@ from pyparsing import (
     Word,
 )
 
-from wpkonverter.parsing.common import (
+from wpkonverter.parsing.grammar.common import (
     between,
     contact_start,
     footer,
