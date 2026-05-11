@@ -46,16 +46,33 @@ companion_program_points_start = Suppress(
 
 subject = between(subject_start, speaker_start, "Subject")
 speaker = between(speaker_start, organization_start, "Speaker")
-organization = between(organization_start, position_start, "Organization")
-position = between(position_start, contact_start, "Position")
+
+# Since the position seems to be optional we need to parse either to the start
+# of the position or contact start token.
+organization = between(
+    organization_start, position_start | contact_start, "Organization"
+)
+position = Optional(between(position_start, contact_start)).set_parse_action(
+    lambda tokens: "" if len(tokens) <= 0 else tokens[0]
+)("Position")
+
 mail_part = Word(printables, exclude_chars=",{}@")
 contact_mail_text = Combine(mail_part + "@" + mail_part)
 contact_mail = contact_start + contact_mail_text("Mail Address")
-contact_telephone_number = Combine(Optional("+") + Word(nums + "/"))
+contact_telephone_number = Combine(Optional("+") + Word(nums + "/ "))
 contact = contact_mail + contact_telephone_number("Telephone Number")
 program_points = program_points_start + program_points_text("Program Points")
-companion_choice = Word("nein") ^ Word("ja")
-companion = companion_start + companion_choice("Companion")
+
+# As far as I can tell the system only adds the text `ja`, if you choose
+# “yes” as answer to the question, if someone is accompanying you. For the
+# one mail, where I choose “no”, the system did not add text at all. I was
+# still able to add information about a hypothetical person that was
+# accompanying, which I did (for debugging purposes) although it is a
+# nonsensical choice in this case.
+companion_choice = Optional(Keyword("ja"))
+companion = (companion_start + companion_choice).set_parse_action(
+    lambda tokens: "nein" if len(tokens) <= 0 else tokens[0]
+)("Companion")
 companion_name_text = SkipTo(companion_organization_start).set_parse_action(
     strip
 )
@@ -66,8 +83,9 @@ companion_organization = between(
     "Organization (Companion)",
 )
 companion_program_points = (
-    companion_program_points_start
-    + program_points_text("Program Points (Companion)")
+    Suppress(companion_program_points_start) + Optional(program_points_text)
+)("Program Points (Companion)").set_parse_action(
+    lambda tokens: "" if len(tokens) <= 0 else tokens[0]
 )
 message = between(message_start, footer_start, "Message")
 

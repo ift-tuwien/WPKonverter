@@ -39,3 +39,11 @@ def test_program_points():
         "• 7.10.2026 (Galadinner)\n"
         "• 8.10.2026 (2. Kongresstag)"
     ]
+
+    text = "Wednesday 7.10.2026 - Congress Day 1"
+    parsed = program_points.parse_string(text, parse_all=True)
+    assert parsed.as_list() == ["• 7.10.2026 (Congress Day 1)"]
+
+    text = "Tuesday 6.10.2026 - Come Together"
+    parsed = program_points.parse_string(text, parse_all=True)
+    assert parsed.as_list() == ["• 6.10.2026 (Come Together)"]

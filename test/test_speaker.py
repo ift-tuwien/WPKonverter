@@ -9,30 +9,54 @@ from wpkonverter.parsing.speaker import speaker_registration
 # -- Tests --------------------------------------------------------------------
 
 
-def test_speaker_registration(checkers):
-    """Try to parse example pre-registration data"""
+def test_speaker_registration1(checkers):
+    """Try to parse first pre-registration data example"""
 
-    filepath = Path(__file__).parent / "data" / "speaker.txt"
+    filepath = Path(__file__).parent / "data" / "speaker1.txt"
     checkers.check_grammar(
         speaker_registration,
         filepath,
         {
-            "Companion": "ja",
-            "Companion (Name)": "Speaker+1 Speaker+1",
-            "Mail Address": "speakerxcy001@speaker.com",
-            "Message": "Hi, i want to go home.",
+            "Subject": "Speaker Anmeldung WPK2026",
+            "Speaker": "Speaker Speaker, Prof.Dr.",
             "Organization": "TU Wien",
-            "Organization (Companion)": "Nein",
             "Position": "Head",
+            "Mail Address": "speakerxcy001@speaker.com",
+            "Telephone Number": "0123/456789",
             "Program Points": (
                 "• 6.10.2026 (Come Together)\n"
                 "• 7.10.2026 (1. Kongresstag)\n"
                 "• 7.10.2026 (Galadinner)\n"
                 "• 8.10.2026 (2. Kongresstag)"
             ),
+            "Companion": "ja",
+            "Companion (Name)": "Speaker+1 Speaker+1",
+            "Organization (Companion)": "Nein",
             "Program Points (Companion)": "",
-            "Speaker": "Speaker Speaker, Prof.Dr.",
+            "Message": "Hi, i want to go home.",
+        },
+    )
+
+
+def test_speaker_registration2(checkers):
+    """Try to parse second pre-registration data example"""
+
+    filepath = Path(__file__).parent / "data" / "speaker2.txt"
+    checkers.check_grammar(
+        speaker_registration,
+        filepath,
+        {
             "Subject": "Speaker Anmeldung WPK2026",
-            "Telephone Number": "0123/456789",
+            "Speaker": "TestSpeaker",
+            "Organization": "Some Company",
+            "Position": "",
+            "Mail Address": "test.speaker@some.company.com",
+            "Telephone Number": "+555 123",
+            "Program Points": "• 7.10.2026 (Congress Day 1)",
+            "Companion": "nein",
+            "Companion (Name)": "Company Asset",
+            "Organization (Companion)": "",
+            "Program Points (Companion)": "• 6.10.2026 (Come Together)",
+            "Message": "This is speaker registration test data.",
         },
     )
