@@ -4,7 +4,7 @@
 
 from pathlib import Path
 
-from wpkonverter.parsing.pre_registration import pre_registration
+from wpkonverter.parsing.grammar.pre_registration import pre_registration
 
 # -- Tests --------------------------------------------------------------------
 

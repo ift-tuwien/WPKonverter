@@ -26,7 +26,7 @@ from wpkonverter.parsing.common import (
     speaker_start,
     strip,
 )
-from wpkonverter.parsing.program_point import (
+from wpkonverter.parsing.grammar.program_point import (
     program_points as program_points_text,
 )
 

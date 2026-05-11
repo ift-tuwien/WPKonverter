@@ -2,7 +2,7 @@
 
 # -- Imports ------------------------------------------------------------------
 
-from wpkonverter.parsing.program_point import (
+from wpkonverter.parsing.grammar.program_point import (
     program_point,
     program_points,
     ProgramPoint,

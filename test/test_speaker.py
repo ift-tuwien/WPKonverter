@@ -4,7 +4,7 @@
 
 from pathlib import Path
 
-from wpkonverter.parsing.speaker import speaker_registration
+from wpkonverter.parsing.grammar.speaker import speaker_registration
 
 # -- Tests --------------------------------------------------------------------
 

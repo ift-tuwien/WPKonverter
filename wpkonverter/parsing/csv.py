@@ -19,8 +19,8 @@ from wpkonverter.parsing.common import (
     generate_error_message,
     RegistrationType,
 )
-from wpkonverter.parsing.pre_registration import pre_registration
-from wpkonverter.parsing.speaker import speaker_registration
+from wpkonverter.parsing.grammar.pre_registration import pre_registration
+from wpkonverter.parsing.grammar.speaker import speaker_registration
 
 # -- Functions ----------------------------------------------------------------
 
