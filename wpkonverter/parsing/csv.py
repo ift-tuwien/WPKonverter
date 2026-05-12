@@ -211,7 +211,6 @@ def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
             logger.debug("Mail text: %s", text)
             try:
                 parsed = grammar.parse_string(text, parse_all=True)
-                logger.debug("🙊 Parsed: %s", parsed.as_dict())
                 registration_types.append(registration_type)
                 parsing_results.append(parsed.as_dict())
             except ParseException as error:
@@ -223,9 +222,6 @@ def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
                 continue
 
     converted = convert_program_points(parsing_results)
-    for mail in converted:
-        logger.debug("🙈 Converted: %s", mail)
-
     registration_data = list(zip(registration_types, converted))
 
     return convert_parse_results_data_frame(registration_data)
