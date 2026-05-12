@@ -10,7 +10,7 @@ from wpkonverter.cli import get_arguments
 from wpkonverter.excel import modify_header_text, store_data_workbook
 from wpkonverter.parsing import parse_csv_file
 from wpkonverter.parsing.csv import convert_parse_results_data_frame
-from wpkonverter.parsing.program_point import convert_program_points
+from wpkonverter.parsing.post_processing import convert_program_points
 
 # -- Functions ----------------------------------------------------------------
 
