@@ -7,7 +7,7 @@ from logging import basicConfig, getLogger
 from sys import exit as sys_exit, stderr
 
 from wpkonverter.cli import get_arguments
-from wpkonverter.excel import store_data_workbook
+from wpkonverter.excel import modify_header_text, store_data_workbook
 from wpkonverter.parsing import parse_csv_file
 
 # -- Functions ----------------------------------------------------------------
@@ -54,5 +54,7 @@ def main() -> None:
         exit_error(f"Unable to read file “{input_filepath}”: {error}")
 
     output_filepath = input_filepath.with_suffix(".xlsx")
-    store_data_workbook(parsed_mails, output_filepath)
+    store_data_workbook(
+        parsed_mails, output_filepath, header_function=modify_header_text
+    )
     print(f"Stored data in “{output_filepath}”")
