@@ -11,7 +11,7 @@ from sys import stderr
 from typing import Any
 
 from pandas import DataFrame
-from pyparsing import ParseException
+from pyparsing import ParserElement, ParseException
 
 from wpkonverter.parsing.error import generate_error_message
 from wpkonverter.parsing.program_point import convert_program_points
@@ -164,7 +164,29 @@ def get_registration_type(subject: str) -> RegistrationType:
     return RegistrationType.UNKOWN
 
 
-# pylint: disable=too-many-locals
+def get_grammar(registration_type: RegistrationType) -> ParserElement | None:
+    """Get the grammar definition for a certain registration type
+
+
+    Args:
+
+        registration_type:
+
+            The type of the registration data
+
+    Returns:
+
+        The grammar definition for the registration type or ``None`` if no
+        grammar for the registration type is known
+
+    """
+
+    type_to_grammar = {
+        RegistrationType.PRE_REGISTRATION: pre_registration,
+        RegistrationType.SPEAKER: speaker_registration,
+    }
+
+    return type_to_grammar.get(registration_type)
 
 
 def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
@@ -183,10 +205,6 @@ def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
     """
 
     logger = getLogger(__name__)
-    type_to_grammar = {
-        RegistrationType.PRE_REGISTRATION: pre_registration,
-        RegistrationType.SPEAKER: speaker_registration,
-    }
 
     registration_types: list[RegistrationType] = []
     parsing_results: list[dict[str, Any]] = []
@@ -194,11 +212,8 @@ def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
         reader = DictReader(csvfile)
 
         for mail_number, row in enumerate(reader, start=1):
-            logger.debug("Row: %s", row)
-            subject = row["Betreff"]
-            registration_type = get_registration_type(subject)
-            logger.debug("Registration type: %s", registration_type)
-            grammar = type_to_grammar.get(registration_type)
+            registration_type = get_registration_type(row["Betreff"])
+            grammar = get_grammar(registration_type)
             if grammar is None:
                 print(
                     f"No grammar for registration type “{registration_type}” "
@@ -225,6 +240,3 @@ def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
     registration_data = list(zip(registration_types, converted))
 
     return convert_parse_results_data_frame(registration_data)
-
-
-# pylint: enable=too-many-locals
