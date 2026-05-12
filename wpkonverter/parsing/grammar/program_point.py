@@ -47,6 +47,16 @@ class ProgramPoint:
     def __eq__(self, other):
         """Check if two program points are equal
 
+        Args:
+
+            other:
+
+                The other object that should be compared to this program point
+
+        Return:
+
+            ``True`` if ``self`` and ``other`` are equal, ``False`` otherwise
+
         Examples:
 
             >>> date = "4.5.2006"
@@ -94,6 +104,46 @@ class ProgramPoint:
         """
 
         return hash((self.date, self.description))
+
+    def __lt__(self, other: Any):
+        """Check if a program point is smaller than another object
+
+        Args:
+
+            other:
+
+                The other object that should be compared to this program point
+
+        Return:
+
+            ``True`` if ``self`` is smaller than ``other``, ``False`` otherwise
+
+        Examples:
+
+            Check if a smaller program point is smaller than a larger one
+
+            >>> smaller = ProgramPoint(["3.4.2026", "Point 1"])
+            >>> larger = ProgramPoint(["4.4.2026", "Point 2"])
+            >>> largest = ProgramPoint(["1.1.2027", "Point 3"])
+            >>> smaller < larger
+            True
+
+            Sort some program points
+
+            >>> sorted([larger, largest, smaller])
+            [03.04.2026 (Point 1), 04.04.2026 (Point 2), 01.01.2027 (Point 3)]
+
+        """
+
+        if isinstance(other, ProgramPoint):
+            if self.date < other.date:
+                return True
+            if self.date == other.date:
+                return self.description < other.description
+
+            return False
+
+        return NotImplemented
 
     def __repr__(self):
         """Return a textual representation of the program point
