@@ -14,7 +14,6 @@ from pandas import DataFrame
 from pyparsing import ParserElement, ParseException
 
 from wpkonverter.parsing.error import generate_error_message
-from wpkonverter.parsing.program_point import convert_program_points
 from wpkonverter.parsing.grammar.pre_registration import pre_registration
 from wpkonverter.parsing.grammar.speaker import speaker_registration
 
@@ -189,7 +188,9 @@ def get_grammar(registration_type: RegistrationType) -> ParserElement | None:
     return type_to_grammar.get(registration_type)
 
 
-def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
+def parse_csv_file(
+    filepath: Path,
+) -> tuple[list[RegistrationType], list[dict[str, Any]]]:
     """Parse CSV mails for registration data
 
     Args:
@@ -200,7 +201,8 @@ def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
 
     Returns:
 
-        A list of parsed mail data
+        A tuple containing two lists of the same length, the first contains
+        registration types and the second one the parsed registration data
 
     """
 
@@ -236,7 +238,4 @@ def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
                 )
                 continue
 
-    converted = convert_program_points(parsing_results)
-    registration_data = list(zip(registration_types, converted))
-
-    return convert_parse_results_data_frame(registration_data)
+    return registration_types, parsing_results

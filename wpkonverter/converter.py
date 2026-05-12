@@ -9,6 +9,8 @@ from sys import exit as sys_exit, stderr
 from wpkonverter.cli import get_arguments
 from wpkonverter.excel import modify_header_text, store_data_workbook
 from wpkonverter.parsing import parse_csv_file
+from wpkonverter.parsing.csv import convert_parse_results_data_frame
+from wpkonverter.parsing.program_point import convert_program_points
 
 # -- Functions ----------------------------------------------------------------
 
@@ -49,9 +51,14 @@ def main() -> None:
     input_filepath = Path(arguments.filepath)
 
     try:
-        parsed_mails = parse_csv_file(input_filepath)
+        registration_types, parsing_results = parse_csv_file(input_filepath)
     except UnicodeDecodeError as error:
         exit_error(f"Unable to read file “{input_filepath}”: {error}")
+
+    converted = convert_program_points(parsing_results)
+    parsed_mails = convert_parse_results_data_frame(
+        list(zip(registration_types, converted))
+    )
 
     output_filepath = input_filepath.with_suffix(".xlsx")
     store_data_workbook(
