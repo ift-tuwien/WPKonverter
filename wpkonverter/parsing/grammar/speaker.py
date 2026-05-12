@@ -44,7 +44,7 @@ companion_program_points_start = Suppress(
     Keyword("Die Begleitperson nimmt an folgenden Programmpunkten  teil:")
 )
 
-subject = between(subject_start, speaker_start, "Subject")
+subject = between(subject_start, speaker_start)
 speaker = between(speaker_start, organization_start, "Speaker")
 
 # Since the position seems to be optional we need to parse either to the start

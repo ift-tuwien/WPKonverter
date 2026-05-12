@@ -17,11 +17,10 @@ def test_pre_registration(checkers):
         pre_registration,
         filepath,
         {
-            "Contact": "stefan.hinterberger@dexis.at\n06646148120",
-            "Message": "",
-            "Organization": "DEXIS Austria GmbH",
             "Participant": "Stefan Hinterberger",
+            "Organization": "DEXIS Austria GmbH",
+            "Contact": "stefan.hinterberger@dexis.at\n06646148120",
             "Sponsor": "nein",
-            "Subject": "Vorregistrierung für WPK2026",
+            "Message": "",
         },
     )

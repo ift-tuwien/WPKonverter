@@ -23,7 +23,7 @@ sponsor_start = Suppress(
     Keyword("Sind Sie daran interessiert, Sponsor oder Redner zu werden?:")
 )
 
-subject = between(subject_start, participant_start, "Subject")
+subject = between(subject_start, participant_start)
 participant = between(participant_start, organization_start, "Participant")
 organization = between(organization_start, contact_start, "Organization")
 contact = between(contact_start, sponsor_start, "Contact")

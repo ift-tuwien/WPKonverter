@@ -18,7 +18,6 @@ def test_speaker_registration1(checkers):
         speaker_registration,
         filepath,
         {
-            "Subject": "Speaker Anmeldung WPK2026",
             "Speaker": "Speaker Speaker, Prof.Dr.",
             "Organization": "TU Wien",
             "Position": "Head",
@@ -47,7 +46,6 @@ def test_speaker_registration2(checkers):
         speaker_registration,
         filepath,
         {
-            "Subject": "Speaker Anmeldung WPK2026",
             "Speaker": "TestSpeaker",
             "Organization": "Some Company",
             "Position": "",
@@ -73,7 +71,6 @@ def test_speaker_registration3(checkers):
         speaker_registration,
         filepath,
         {
-            "Subject": "Speaker Anmeldung WPK2026",
             "Speaker": "Speaker Test 1, BM",
             "Organization": "Test Uni",
             "Position": "BM",
