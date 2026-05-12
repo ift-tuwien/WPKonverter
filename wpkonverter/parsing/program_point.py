@@ -102,10 +102,10 @@ def convert_program_points(
         >>> parsed_mails = convert_program_points([parsed_mail])
         >>> converted_mail = parsed_mails.pop()
         >>> converted_mail # doctest: +NORMALIZE_WHITESPACE
-        {'Program Points 06.10.2026 (Come Together)': False,
-         'Program Points 07.10.2026 (Congress Day 1)': True,
-         'Program Points (Companion) 06.10.2026 (Come Together)': True,
-         'Program Points (Companion) 07.10.2026 (Congress Day 1)': False}
+        {'Program Points 06.10.2026 Come Together': False,
+         'Program Points 07.10.2026 Congress Day 1': True,
+         'Program Points (Companion) 06.10.2026 Come Together': True,
+         'Program Points (Companion) 07.10.2026 Congress Day 1': False}
 
     """
 

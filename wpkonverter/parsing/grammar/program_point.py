@@ -132,7 +132,7 @@ class ProgramPoint:
             Sort some program points
 
             >>> sorted([larger, largest, smaller])
-            [03.04.2026 (Point 1), 04.04.2026 (Point 2), 01.01.2027 (Point 3)]
+            [03.04.2026 Point 1, 04.04.2026 Point 2, 01.01.2027 Point 3]
 
         """
 
@@ -154,15 +154,11 @@ class ProgramPoint:
             Print the representation of a simple program point
 
             >>> ProgramPoint(["1.1.1970", "Party"])
-            01.01.1970 (Party)
+            01.01.1970 Party
 
         """
 
-        representation = self.date.strftime("%d.%m.%Y")
-        if self.description is not None:
-            representation += f" ({self.description})"
-
-        return representation
+        return self.date.strftime("%d.%m.%Y") + f" {self.description}"
 
     def _unify_description(self) -> None:
         """Unify program point description
@@ -178,7 +174,7 @@ class ProgramPoint:
             Check the English description of a German program point
 
             >>> ProgramPoint(["11.5.2026", "Galadinner"])
-            11.05.2026 (Gala Dinner)
+            11.05.2026 Gala Dinner
 
         """
 
