@@ -134,3 +134,51 @@ def convert_program_points(
         converted_mails.append(converted)
 
     return converted_mails
+
+
+def replace_parsed_values(
+    parsed_mails: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Replace certain parsed values with replacement values
+
+    Args:
+
+        parsed_mails:
+
+            A list of parsed WPK mails
+
+    Returns:
+
+        A list of parsed WPK mails, where certain values were replaced
+
+    Examples:
+
+        Replace values in some example data
+
+        >>> parsed = {
+        ...     'Program Points 06.10.2026 Come Together': False,
+        ...     'Program Points 07.10.2026 Congress Day 1': True,
+        ...     'Program Points (Companion) 06.10.2026 Come Together': True,
+        ...     'Program Points (Companion) 07.10.2026 Congress Day 1': False
+        ... }
+        >>> converted = replace_parsed_values([parsed])
+        >>> converted.pop() # doctest: +NORMALIZE_WHITESPACE
+        {'Program Points 06.10.2026 Come Together': '❌',
+         'Program Points 07.10.2026 Congress Day 1': '✅',
+         'Program Points (Companion) 06.10.2026 Come Together': '✅',
+         'Program Points (Companion) 07.10.2026 Congress Day 1': '❌'}
+
+    """
+
+    converted_mails: list[dict[str, Any]] = []
+
+    for mail in parsed_mails:
+        converted: dict[str, Any] = {}
+        for key, value in mail.items():
+            if isinstance(value, bool):
+                converted[key] = "✅" if value else "❌"
+            else:
+                converted[key] = value
+        converted_mails.append(converted)
+
+    return converted_mails
