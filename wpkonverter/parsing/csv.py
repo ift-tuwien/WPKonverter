@@ -11,12 +11,10 @@ from sys import stderr
 from typing import Any
 
 from pandas import DataFrame
-from pyparsing import (
-    ParseException,
-    ParseResults,
-)
+from pyparsing import ParseException
 
 from wpkonverter.parsing.error import generate_error_message
+from wpkonverter.parsing.program_point import convert_program_points
 from wpkonverter.parsing.grammar.pre_registration import pre_registration
 from wpkonverter.parsing.grammar.speaker import speaker_registration
 
@@ -70,7 +68,7 @@ class RegistrationType(Enum):
 
 
 def convert_parse_results_data_frame(
-    parsing_results: list[tuple[RegistrationType, ParseResults]],
+    parsing_results: list[tuple[RegistrationType, dict[str, Any]]],
 ) -> dict[RegistrationType, DataFrame]:
     """Convert parsing data into data frame
 
@@ -93,7 +91,7 @@ def convert_parse_results_data_frame(
 
     for registration_type, registration in parsing_results:
         logger.debug("Registration type: %s", registration_type)
-        logger.debug("Registration data: %s", registration.as_dict())
+        logger.debug("Registration data: %s", registration)
         if registration_data.get(registration_type) is None:
             registration_data[registration_type] = {}
         registration_dict = registration_data[registration_type]
@@ -166,6 +164,9 @@ def get_registration_type(subject: str) -> RegistrationType:
     return RegistrationType.UNKOWN
 
 
+# pylint: disable=too-many-locals
+
+
 def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
     """Parse CSV mails for registration data
 
@@ -187,7 +188,8 @@ def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
         RegistrationType.SPEAKER: speaker_registration,
     }
 
-    parsing_results: list[tuple[RegistrationType, ParseResults]] = []
+    registration_types: list[RegistrationType] = []
+    parsing_results: list[dict[str, Any]] = []
     with open(filepath, newline="", encoding="utf-8-sig") as csvfile:
         reader = DictReader(csvfile)
 
@@ -209,7 +211,9 @@ def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
             logger.debug("Mail text: %s", text)
             try:
                 parsed = grammar.parse_string(text, parse_all=True)
-                parsing_results.append((registration_type, parsed))
+                logger.debug("🙊 Parsed: %s", parsed.as_dict())
+                registration_types.append(registration_type)
+                parsing_results.append(parsed.as_dict())
             except ParseException as error:
                 print(
                     f"Unable to parse data in mail {mail_number}:\n\n"
@@ -218,4 +222,13 @@ def parse_csv_file(filepath: Path) -> dict[RegistrationType, DataFrame]:
                 )
                 continue
 
-    return convert_parse_results_data_frame(parsing_results)
+    converted = convert_program_points(parsing_results)
+    for mail in converted:
+        logger.debug("🙈 Converted: %s", mail)
+
+    registration_data = list(zip(registration_types, converted))
+
+    return convert_parse_results_data_frame(registration_data)
+
+
+# pylint: enable=too-many-locals

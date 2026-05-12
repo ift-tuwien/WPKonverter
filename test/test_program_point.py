@@ -48,16 +48,16 @@ def test_program_points():
 
     parsed = program_points.parse_string(text, parse_all=True)
     assert parsed.as_list() == [
-        "• 06.10.2026 (Come Together)\n"
-        "• 07.10.2026 (Congress Day 1)\n"
-        "• 07.10.2026 (Gala Dinner)\n"
-        "• 08.10.2026 (Congress Day 2)"
+        ProgramPoint(["06.10.2026", "Come Together"]),
+        ProgramPoint(["07.10.2026", "Congress Day 1"]),
+        ProgramPoint(["07.10.2026", "Gala Dinner"]),
+        ProgramPoint(["08.10.2026", "Congress Day 2"]),
     ]
 
     text = "Wednesday 7.10.2026 - Congress Day 1"
     parsed = program_points.parse_string(text, parse_all=True)
-    assert parsed.as_list() == ["• 07.10.2026 (Congress Day 1)"]
+    assert parsed.as_list() == [ProgramPoint(["07.10.2026", "Congress Day 1"])]
 
     text = "Tuesday 6.10.2026 - Come Together"
     parsed = program_points.parse_string(text, parse_all=True)
-    assert parsed.as_list() == ["• 06.10.2026 (Come Together)"]
+    assert parsed.as_list() == [ProgramPoint(["06.10.2026", "Come Together"])]

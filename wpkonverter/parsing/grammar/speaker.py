@@ -76,7 +76,7 @@ companion = (companion_start + companion_choice).set_parse_action(
 companion_name_text = SkipTo(companion_organization_start).set_parse_action(
     strip
 )
-companion_name = companion_name_text("Companion (Name)")
+companion_name = companion_name_text("Name (Companion)")
 companion_organization = between(
     companion_organization_start,
     companion_program_points_start,
@@ -84,9 +84,7 @@ companion_organization = between(
 )
 companion_program_points = (
     Suppress(companion_program_points_start) + Optional(program_points_text)
-)("Program Points (Companion)").set_parse_action(
-    lambda tokens: "" if len(tokens) <= 0 else tokens[0]
-)
+)("Program Points (Companion)")
 message = between(message_start, footer_start, "Message")
 
 speaker_registration = (

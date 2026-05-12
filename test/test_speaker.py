@@ -4,6 +4,7 @@
 
 from pathlib import Path
 
+from wpkonverter.parsing.grammar.program_point import ProgramPoint
 from wpkonverter.parsing.grammar.speaker import speaker_registration
 
 # -- Tests --------------------------------------------------------------------
@@ -23,16 +24,16 @@ def test_speaker_registration1(checkers):
             "Position": "Head",
             "Mail Address": "speakerxcy001@speaker.com",
             "Telephone Number": "0123/456789",
-            "Program Points": (
-                "• 06.10.2026 (Come Together)\n"
-                "• 07.10.2026 (Congress Day 1)\n"
-                "• 07.10.2026 (Gala Dinner)\n"
-                "• 08.10.2026 (Congress Day 2)"
-            ),
+            "Program Points": [
+                ProgramPoint(["06.10.2026", "Come Together"]),
+                ProgramPoint(["07.10.2026", "Congress Day 1"]),
+                ProgramPoint(["07.10.2026", "Gala Dinner"]),
+                ProgramPoint(["08.10.2026", "Congress Day 2"]),
+            ],
             "Companion": "ja",
-            "Companion (Name)": "Speaker+1 Speaker+1",
+            "Name (Companion)": "Speaker+1 Speaker+1",
             "Organization (Companion)": "Nein",
-            "Program Points (Companion)": "",
+            "Program Points (Companion)": [],
             "Message": "Hi, i want to go home.",
         },
     )
@@ -52,11 +53,13 @@ def test_speaker_registration2(checkers):
             "Position": "",
             "Mail Address": "test.speaker@some.company.com",
             "Telephone Number": "+555 123",
-            "Program Points": "• 07.10.2026 (Congress Day 1)",
+            "Program Points": [ProgramPoint(["07.10.2026", "Congress Day 1"])],
             "Companion": "nein",
-            "Companion (Name)": "Company Asset",
+            "Name (Companion)": "Company Asset",
             "Organization (Companion)": "",
-            "Program Points (Companion)": "• 06.10.2026 (Come Together)",
+            "Program Points (Companion)": [
+                ProgramPoint(["06.10.2026", "Come Together"])
+            ],
             "Message": "This is speaker registration test data.",
         },
     )
@@ -76,17 +79,18 @@ def test_speaker_registration3(checkers):
             "Position": "BM",
             "Mail Address": "miksch@ift.at",
             "Telephone Number": "+43000000000",
-            "Program Points": (
-                "• 07.10.2026 (Congress Day 1)\n"
-                "• 07.10.2026 (Gala Dinner)\n"
-                "• 08.10.2026 (Congress Day 2)"
-            ),
+            "Program Points": [
+                ProgramPoint(["07.10.2026", "Congress Day 1"]),
+                ProgramPoint(["07.10.2026", "Gala Dinner"]),
+                ProgramPoint(["08.10.2026", "Congress Day 2"]),
+            ],
             "Companion": "ja",
-            "Companion (Name)": "Test 1 Begleitung",
+            "Name (Companion)": "Test 1 Begleitung",
             "Organization (Companion)": "Test Uni",
-            "Program Points (Companion)": (
-                "• 06.10.2026 (Come Together)\n• 07.10.2026 (Gala Dinner)"
-            ),
+            "Program Points (Companion)": [
+                ProgramPoint(["06.10.2026", "Come Together"]),
+                ProgramPoint(["07.10.2026", "Gala Dinner"]),
+            ],
             "Message": "kein Kommentar",
         },
     )

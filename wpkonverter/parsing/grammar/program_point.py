@@ -4,6 +4,7 @@
 
 from datetime import datetime
 from re import sub
+from typing import Any
 
 from pyparsing import (
     CharsNotIn,
@@ -217,11 +218,7 @@ program_point = (
     + program_point_description
 ).set_parse_action(ProgramPoint)
 
-program_points = DelimitedList(program_point).set_parse_action(
-    lambda tokens: "\n".join(
-        [f"• {program_point}" for program_point in map(repr, tokens)]
-    )
-)
+program_points = DelimitedList(program_point)
 """Program points
 
 Example:
