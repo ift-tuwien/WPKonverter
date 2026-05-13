@@ -3,12 +3,11 @@
 # -- Imports ------------------------------------------------------------------
 
 
-from pyparsing import Keyword, Optional, Suppress
+from pyparsing import Keyword, Suppress
 
 from wpkonverter.parsing.grammar.common import (
     between,
-    contact_mail,
-    contact_telephone_number,
+    contact_optional_number as contact,
     footer,
     footer_start,
     from_,
@@ -28,9 +27,6 @@ sponsor_start = Suppress(
 
 subject = between(subject_start, participant_start)
 participant = between(participant_start, organization_start, "Participant")
-contact = contact_mail + Optional(contact_telephone_number).set_parse_action(
-    lambda tokens: "" if len(tokens) <= 0 else tokens[0]
-)("Telephone Number")
 sponsor = between(sponsor_start, message_start).set_parse_action(
     lambda tokens: tokens[0] != "nein"
 )("Sponsor")

@@ -15,6 +15,10 @@ from pyparsing import (
     Word,
 )
 
+from wpkonverter.parsing.grammar.program_point import (
+    program_points as program_points_text,
+)
+
 # -- Functions ----------------------------------------------------------------
 
 
@@ -71,14 +75,22 @@ subject_start = Suppress(Keyword("Betreff:") | Keyword("Subject:"))
 participant_start = Suppress(
     Keyword("Teilnehmerin/Teilnehmer:") | Keyword("Participant:")
 )
-speaker_start = Suppress(
-    Optional(Keyword("Speakerinnen/")) + Keyword("Speaker:")
-)
 sponsor_start = Suppress(Keyword("Sponsoren:"))
+program_points_start = Suppress(
+    Keyword("Ich nehme teil an folgenden Programmpunkten teil:")
+)
 
 organization_start = Suppress(Keyword("Unternehmen/ Bildungsinstitut:"))
 position_start = Suppress(Keyword("Position:"))
 contact_start = Suppress(Keyword("Kontakt:"))
+companion_start = Suppress(Keyword("Begleitperson:"))
+companion_organization_start = Suppress(
+    Keyword("Unternehmen/Bildungsinstitut (wenn vorhanden):")
+)
+companion_program_points_start = Suppress(
+    Keyword("Die Begleitperson nimmt an folgenden Programmpunkten  teil:")
+)
+
 message_start = Suppress(Keyword("Nachricht:"))
 footer_start = Suppress(Keyword("--"))
 footer = Suppress(
@@ -111,3 +123,45 @@ mail_part = Word(printables, exclude_chars=",{}@")
 contact_mail_text = Combine(mail_part + "@" + mail_part)
 contact_mail = contact_start + contact_mail_text("Mail Address")
 contact_telephone_number = Combine(Optional("+") + Word(nums + "/ "))
+
+contact = contact_mail + contact_telephone_number("Telephone Number")
+contact_optional_number = contact_mail + Optional(
+    contact_telephone_number
+).set_parse_action(lambda tokens: "" if len(tokens) <= 0 else tokens[0])(
+    "Telephone Number"
+)
+
+program_points = program_points_start + program_points_text("Program Points")
+
+# As far as I can tell the system adds the text `ja`, if you choose “yes”
+# as answer to the question, if someone is accompanying you. For one mail,
+# where I chose “no”, the system did not add text at all, while for another
+# one it added `nein`.
+companion_choice = Optional(Keyword("ja") | Keyword("nein"))
+companion = (companion_start + companion_choice).set_parse_action(
+    lambda tokens: False if len(tokens) <= 0 else tokens[0] == "ja"
+)("Companion")
+companion_name_text = SkipTo(companion_organization_start).set_parse_action(
+    strip
+)
+companion_name = companion_name_text("Name (Companion)")
+companion_organization = between(
+    companion_organization_start,
+    companion_program_points_start,
+    "Organization (Companion)",
+)
+companion_program_points = (
+    Suppress(companion_program_points_start) + Optional(program_points_text)
+)("Program Points (Companion)")
+message = between(message_start, footer_start, "Message")
+
+companion_data = (
+    companion
+    + companion_name
+    + companion_organization
+    + companion_program_points
+)
+
+contact_until_end = (
+    contact + program_points + companion_data + message + footer_start + footer
+)

@@ -17,7 +17,7 @@ from pyparsing import (
     Word,
 )
 
-from wpkonverter.parsing.grammar.common import strip
+from wpkonverter.parsing.grammar.util import strip
 
 # -- Classes ------------------------------------------------------------------
 

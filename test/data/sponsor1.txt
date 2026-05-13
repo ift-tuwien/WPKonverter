@@ -1,0 +1,28 @@
+Von: Website WPK2026
+Betreff: Sponsoren Anmeldung WPK2026
+
+Sponsoren: Test Sponsor
+Unternehmen/ Bildungsinstitut: Some Company
+Kontakt:
+someone@something.com
++555 1234
+
+Ich nehme teil an folgenden Programmpunkten teil:
+Mittwoch 7.10.2026 - 1. Kongresstag, Donnerstag 8.10.2026 - 2. Kongresstag
+
+Begleitperson: nein
+Big Donor
+Unternehmen/Bildungsinstitut (wenn vorhanden): Some Company
+
+Die Begleitperson nimmt an folgenden Programmpunkten  teil:
+Mittwoch 7.10.2026 - Galadinner
+
+Nachricht:
+This is
+
+test data
+
+I am not a sponsor
+
+--
+This is a notification that a contact form was submitted on your website (Wiener Produktionstechnik-Kongress https://wpk.conf.tuwien.ac.at/en/).
