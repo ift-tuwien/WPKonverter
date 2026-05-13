@@ -7,6 +7,8 @@ from re import sub
 from typing import Any, Callable
 
 from pandas import DataFrame, ExcelWriter
+from xlsxwriter import Workbook
+from xlsxwriter.worksheet import Worksheet
 
 from wpkonverter.parsing.csv import RegistrationType
 
@@ -81,7 +83,86 @@ def get_header_format(registration_type: RegistrationType) -> dict[str, Any]:
     return registration_type_to_header_format[registration_type]
 
 
-# pylint: disable=too-many-locals
+def get_cell_format() -> dict[str, Any]:
+    """Get the formatting options for a Excel cell
+
+    Returns:
+
+        The formatting options for a non-header Excel cell
+
+    """
+
+    return {
+        "text_wrap": True,
+        "valign": "top",
+    }
+
+
+def get_bool_cell_format() -> dict[str, Any]:
+    """Get the formatting options for an boolean Excel cell
+
+    Returns:
+
+        The formatting options for a non-header boolean Excel cell
+
+    """
+
+    return get_cell_format() | {"checkbox": True}
+
+
+def write_header(
+    workbook: Workbook,
+    worksheet: Worksheet,
+    header: list[str],
+    cell_format: dict[str, Any],
+) -> None:
+    """Add header data to a worksheet
+
+    Args:
+
+        workbook:
+
+            The workbook that contains ``worksheet``
+
+        worksheet:
+
+            The worksheet that should store the header data
+
+        header:
+
+            The header that should be added to ``worksheet``
+
+        formatting:
+
+            The cell format for the header
+
+    """
+
+    header_format = workbook.add_format(cell_format)
+    for column, value in enumerate(header):
+        worksheet.write(0, column, value, header_format)
+
+
+def write_cells(workbook, worksheet, registration_data):
+    """fill"""
+    cell_format = workbook.add_format(get_cell_format())
+    bool_format = workbook.add_format(get_bool_cell_format())
+
+    for row_number, row in enumerate(
+        registration_data.itertuples(index=False), start=1
+    ):
+        for column_number, value in enumerate(row):
+
+            value_format = (
+                bool_format if isinstance(value, bool) else cell_format
+            )
+
+            worksheet.write(
+                row_number,
+                column_number,
+                value,
+                value_format,
+            )
 
 
 def store_data_workbook(
@@ -111,49 +192,21 @@ def store_data_workbook(
     with ExcelWriter(filepath, engine="xlsxwriter") as writer:
         for registration_type, registration_data in data.items():
 
-            sheet_name = repr(registration_type)
+            workbook = writer.book
+            worksheet = workbook.add_worksheet(repr(registration_type))
+
             header_text = map(str, registration_data.keys())
             header = list(
                 map(header_function, header_text)
                 if header_function
                 else header_text
             )
-
-            workbook = writer.book
-            workbook.add_worksheet(sheet_name)
-            worksheet = writer.sheets[sheet_name]
-
-            header_format = workbook.add_format(
-                get_header_format(registration_type)
+            write_header(
+                workbook,
+                worksheet,
+                header,
+                cell_format=get_header_format(registration_type),
             )
-            for column, value in enumerate(header):
-                worksheet.write(0, column, value, header_format)
+            write_cells(workbook, worksheet, registration_data)
 
-            cell_format_dict = {
-                "text_wrap": True,
-                "valign": "top",
-            }
-            bool_format_dict = cell_format_dict | {"checkbox": True}
-            cell_format = workbook.add_format(cell_format_dict)
-            bool_format = workbook.add_format(bool_format_dict)
-
-            for row_number, row in enumerate(
-                registration_data.itertuples(index=False), start=1
-            ):
-                for column_number, value in enumerate(row):
-
-                    value_format = (
-                        bool_format if isinstance(value, bool) else cell_format
-                    )
-
-                    worksheet.write(
-                        row_number,
-                        column_number,
-                        value,
-                        value_format,
-                    )
-
-            writer.sheets[sheet_name].autofit()
-
-
-# pylint: enable=too-many-locals
+            worksheet.autofit()
