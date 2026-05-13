@@ -4,11 +4,9 @@
 
 from pathlib import Path
 from re import sub
-from typing import Callable
+from typing import Any, Callable
 
 from pandas import DataFrame, ExcelWriter
-from xlsxwriter import Workbook
-from xlsxwriter.format import Format
 
 from wpkonverter.parsing.csv import RegistrationType
 
@@ -42,16 +40,10 @@ def modify_header_text(text: str) -> str:
     return text
 
 
-def get_header_format(
-    workbook: Workbook, registration_type: RegistrationType
-) -> Format:
+def get_header_format(registration_type: RegistrationType) -> dict[str, Any]:
     """Get the header format for a specific registration type
 
     Args:
-
-        workbook:
-
-            The workbook where the header format should be added
 
         registration_type:
 
@@ -64,8 +56,10 @@ def get_header_format(
 
     """
 
-    base_format = {"bold": True, "bottom": True}
-    registration_type_to_header_format = {
+    base_format: dict[str, Any] = {"bold": True, "bottom": True}
+    registration_type_to_header_format: dict[
+        RegistrationType, dict[str, Any]
+    ] = {
         RegistrationType.PRE_REGISTRATION: (
             base_format
             | {
@@ -84,8 +78,7 @@ def get_header_format(
         RegistrationType.UNKOWN: base_format,
     }
 
-    header_format = registration_type_to_header_format[registration_type]
-    return workbook.add_format(header_format)
+    return registration_type_to_header_format[registration_type]
 
 
 # pylint: disable=too-many-locals
@@ -130,7 +123,9 @@ def store_data_workbook(
             workbook.add_worksheet(sheet_name)
             worksheet = writer.sheets[sheet_name]
 
-            header_format = get_header_format(workbook, registration_type)
+            header_format = workbook.add_format(
+                get_header_format(registration_type)
+            )
             for column, value in enumerate(header):
                 worksheet.write(0, column, value, header_format)
 
