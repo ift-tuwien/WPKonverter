@@ -7,6 +7,8 @@ from re import sub
 from typing import Callable
 
 from pandas import DataFrame, ExcelWriter
+from xlsxwriter import Workbook
+from xlsxwriter.format import Format
 
 from wpkonverter.parsing.csv import RegistrationType
 
@@ -38,6 +40,52 @@ def modify_header_text(text: str) -> str:
 
     text = sub(r"Program Points (\s*\(Companion\))?\s*", "", text)
     return text
+
+
+def get_header_format(
+    workbook: Workbook, registration_type: RegistrationType
+) -> Format:
+    """Get the header format for a specific registration type
+
+    Args:
+
+        workbook:
+
+            The workbook where the header format should be added
+
+        registration_type:
+
+            The registration type for which we want to determine the header
+            format
+
+    Returns:
+
+        The cell format for the header of the given registration type
+
+    """
+
+    base_format = {"bold": True}
+    registration_type_to_header_format = {
+        RegistrationType.PRE_REGISTRATION: (
+            base_format
+            | {
+                "fg_color": "#C6E8E9",
+            }
+        ),
+        RegistrationType.PARTICIPANT: base_format,
+        RegistrationType.SPEAKER: (
+            base_format
+            | {
+                "fg_color": "#E4C5FB",
+            }
+        ),
+        RegistrationType.SPONSOR: base_format,
+        RegistrationType.STUDENT: base_format,
+        RegistrationType.UNKOWN: base_format,
+    }
+
+    header_format = registration_type_to_header_format[registration_type]
+    return workbook.add_format(header_format)
 
 
 # pylint: disable=too-many-locals
@@ -89,10 +137,7 @@ def store_data_workbook(
             worksheet = writer.sheets[sheet_name]
             rows, _ = registration_data.shape
 
-            header_format = workbook.add_format({
-                "bold": True,
-                "fg_color": "#D7E4BC",
-            })
+            header_format = get_header_format(workbook, registration_type)
             for column, value in enumerate(header):
                 worksheet.write(0, column, value, header_format)
 
