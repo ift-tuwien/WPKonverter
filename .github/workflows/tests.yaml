@@ -1,4 +1,4 @@
-name: Check Code
+name: Check & Test Code
 
 on:
   - push
@@ -40,3 +40,6 @@ jobs:
 
     - name: Install just
       uses: taiki-e/install-action@just
+
+    - name: Check and test codebase
+      run: just test
