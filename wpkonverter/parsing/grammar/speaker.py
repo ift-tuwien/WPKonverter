@@ -7,15 +7,15 @@ from pyparsing import Keyword, Optional, SkipTo, Suppress
 
 from wpkonverter.parsing.grammar.common import (
     between,
-    contact_start,
     contact_mail,
     contact_telephone_number,
     footer,
     footer_start,
     from_,
     message_start,
+    organization,
     organization_start,
-    position_start,
+    position,
     subject_start,
     speaker_start,
     strip,
@@ -40,15 +40,6 @@ companion_program_points_start = Suppress(
 
 subject = between(subject_start, speaker_start)
 speaker = between(speaker_start, organization_start, "Speaker")
-
-# Since the position seems to be optional we need to parse either to the start
-# of the position or contact start token.
-organization = between(
-    organization_start, position_start | contact_start, "Organization"
-)
-position = Optional(between(position_start, contact_start)).set_parse_action(
-    lambda tokens: "" if len(tokens) <= 0 else tokens[0]
-)("Position")
 
 contact = contact_mail + contact_telephone_number("Telephone Number")
 program_points = program_points_start + program_points_text("Program Points")

@@ -7,14 +7,15 @@ from pyparsing import Keyword, Optional, Suppress
 
 from wpkonverter.parsing.grammar.common import (
     between,
-    contact_start,
     contact_mail,
     contact_telephone_number,
     footer,
     footer_start,
     from_,
     message_start,
+    organization,
     organization_start,
+    position,
     participant_start,
     subject_start,
 )
@@ -27,7 +28,6 @@ sponsor_start = Suppress(
 
 subject = between(subject_start, participant_start)
 participant = between(participant_start, organization_start, "Participant")
-organization = between(organization_start, contact_start, "Organization")
 contact = contact_mail + Optional(contact_telephone_number).set_parse_action(
     lambda tokens: "" if len(tokens) <= 0 else tokens[0]
 )("Telephone Number")
@@ -39,6 +39,7 @@ pre_registration = (
     + subject
     + participant
     + organization
+    + position
     + contact
     + sponsor
     + message

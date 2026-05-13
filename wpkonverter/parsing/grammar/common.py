@@ -98,6 +98,15 @@ footer = Suppress(
 
 from_ = between(from_start, subject_start)
 
+# Since the position seems to be optional we need to parse either to the start
+# of the position or contact start token.
+organization = between(
+    organization_start, position_start | contact_start, "Organization"
+)
+position = Optional(between(position_start, contact_start)).set_parse_action(
+    lambda tokens: "" if len(tokens) <= 0 else tokens[0]
+)("Position")
+
 mail_part = Word(printables, exclude_chars=",{}@")
 contact_mail_text = Combine(mail_part + "@" + mail_part)
 contact_mail = contact_start + contact_mail_text("Mail Address")
