@@ -126,16 +126,9 @@ def store_data_workbook(
                 else header_text
             )
 
-            registration_data.to_excel(
-                writer,
-                index=False,
-                sheet_name=sheet_name,
-                startrow=1,
-                header=False,
-            )
             workbook = writer.book
+            workbook.add_worksheet(sheet_name)
             worksheet = writer.sheets[sheet_name]
-            rows, _ = registration_data.shape
 
             header_format = get_header_format(workbook, registration_type)
             for column, value in enumerate(header):
@@ -145,8 +138,18 @@ def store_data_workbook(
                 "text_wrap": True,
                 "valign": "top",
             })
-            for row in range(1, rows + 1):
-                worksheet.set_row(row, cell_format=cell_format)
+
+            for row_number, row in enumerate(
+                registration_data.itertuples(index=False), start=1
+            ):
+                for column_number, value in enumerate(row):
+                    worksheet.write(
+                        row_number,
+                        column_number,
+                        value,
+                        cell_format,
+                    )
+
             writer.sheets[sheet_name].autofit()
 
 
