@@ -9,17 +9,18 @@ from wpkonverter.parsing.grammar.pre_registration import pre_registration
 # -- Tests --------------------------------------------------------------------
 
 
-def test_pre_registration(checkers):
-    """Try to parse example pre-registration data"""
+def test_pre_registration1(checkers):
+    """Check first example of pre-registration data"""
 
-    filepath = Path(__file__).parent / "data" / "pre-registration.txt"
+    filepath = Path(__file__).parent / "data" / "pre-registration1.txt"
     checkers.check_grammar(
         pre_registration,
         filepath,
         {
             "Participant": "Stefan Hinterberger",
             "Organization": "DEXIS Austria GmbH",
-            "Contact": "stefan.hinterberger@dexis.at\n06646148120",
+            "Mail Address": "stefan.hinterberger@dexis.at",
+            "Telephone Number": "06646148120",
             "Sponsor": "nein",
             "Message": "",
         },

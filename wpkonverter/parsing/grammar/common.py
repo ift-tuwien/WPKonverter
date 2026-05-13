@@ -3,12 +3,16 @@
 # -- Imports ------------------------------------------------------------------
 
 from pyparsing import (
+    Combine,
     Keyword,
+    nums,
     Optional,
     ParserElement,
     ParseResults,
+    printables,
     SkipTo,
     Suppress,
+    Word,
 )
 
 # -- Functions ----------------------------------------------------------------
@@ -57,6 +61,10 @@ def between(
 
 # -- Grammar ------------------------------------------------------------------
 
+# ================
+# = Start Tokens =
+# ================
+
 from_start = Suppress(Keyword("Von:") | Keyword("From:"))
 subject_start = Suppress(Keyword("Betreff:") | Keyword("Subject:"))
 
@@ -69,6 +77,7 @@ speaker_start = Suppress(
 sponsor_start = Suppress(Keyword("Sponsoren:"))
 
 organization_start = Suppress(Keyword("Unternehmen/ Bildungsinstitut:"))
+position_start = Suppress(Keyword("Position:"))
 contact_start = Suppress(Keyword("Kontakt:"))
 message_start = Suppress(Keyword("Nachricht:"))
 footer_start = Suppress(Keyword("--"))
@@ -83,8 +92,13 @@ footer = Suppress(
     )
 )
 
-# ========
-# = From =
-# ========
+# =================
+# = General Rules =
+# =================
 
 from_ = between(from_start, subject_start)
+
+mail_part = Word(printables, exclude_chars=",{}@")
+contact_mail_text = Combine(mail_part + "@" + mail_part)
+contact_mail = contact_start + contact_mail_text("Mail Address")
+contact_telephone_number = Combine(Optional("+") + Word(nums + "/ "))

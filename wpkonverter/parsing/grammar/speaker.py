@@ -3,25 +3,19 @@
 # -- Imports ------------------------------------------------------------------
 
 
-from pyparsing import (
-    Combine,
-    Keyword,
-    nums,
-    Optional,
-    printables,
-    SkipTo,
-    Suppress,
-    Word,
-)
+from pyparsing import Keyword, Optional, SkipTo, Suppress
 
 from wpkonverter.parsing.grammar.common import (
     between,
     contact_start,
+    contact_mail,
+    contact_telephone_number,
     footer,
     footer_start,
     from_,
     message_start,
     organization_start,
+    position_start,
     subject_start,
     speaker_start,
     strip,
@@ -32,7 +26,7 @@ from wpkonverter.parsing.grammar.program_point import (
 
 # -- Grammar ------------------------------------------------------------------
 
-position_start = Suppress(Keyword("Position:"))
+
 program_points_start = Suppress(
     Keyword("Ich nehme teil an folgenden Programmpunkten teil:")
 )
@@ -56,10 +50,6 @@ position = Optional(between(position_start, contact_start)).set_parse_action(
     lambda tokens: "" if len(tokens) <= 0 else tokens[0]
 )("Position")
 
-mail_part = Word(printables, exclude_chars=",{}@")
-contact_mail_text = Combine(mail_part + "@" + mail_part)
-contact_mail = contact_start + contact_mail_text("Mail Address")
-contact_telephone_number = Combine(Optional("+") + Word(nums + "/ "))
 contact = contact_mail + contact_telephone_number("Telephone Number")
 program_points = program_points_start + program_points_text("Program Points")
 
