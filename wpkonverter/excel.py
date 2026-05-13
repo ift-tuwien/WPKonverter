@@ -134,20 +134,28 @@ def store_data_workbook(
             for column, value in enumerate(header):
                 worksheet.write(0, column, value, header_format)
 
-            cell_format = workbook.add_format({
+            cell_format_dict = {
                 "text_wrap": True,
                 "valign": "top",
-            })
+            }
+            bool_format_dict = cell_format_dict | {"checkbox": True}
+            cell_format = workbook.add_format(cell_format_dict)
+            bool_format = workbook.add_format(bool_format_dict)
 
             for row_number, row in enumerate(
                 registration_data.itertuples(index=False), start=1
             ):
                 for column_number, value in enumerate(row):
+
+                    value_format = (
+                        bool_format if isinstance(value, bool) else cell_format
+                    )
+
                     worksheet.write(
                         row_number,
                         column_number,
                         value,
-                        cell_format,
+                        value_format,
                     )
 
             writer.sheets[sheet_name].autofit()

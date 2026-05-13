@@ -10,10 +10,7 @@ from wpkonverter.cli import get_arguments
 from wpkonverter.excel import modify_header_text, store_data_workbook
 from wpkonverter.parsing import parse_csv_file
 from wpkonverter.parsing.csv import convert_parse_results_data_frame
-from wpkonverter.parsing.post_processing import (
-    convert_program_points,
-    replace_parsed_values,
-)
+from wpkonverter.parsing.post_processing import convert_program_points
 
 # -- Functions ----------------------------------------------------------------
 
@@ -58,7 +55,7 @@ def main() -> None:
     except UnicodeDecodeError as error:
         exit_error(f"Unable to read file “{input_filepath}”: {error}")
 
-    converted = replace_parsed_values(convert_program_points(parsing_results))
+    converted = convert_program_points(parsing_results)
     parsed_mails = convert_parse_results_data_frame(
         list(zip(registration_types, converted))
     )
