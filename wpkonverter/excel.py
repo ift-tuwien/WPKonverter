@@ -40,6 +40,9 @@ def modify_header_text(text: str) -> str:
     return text
 
 
+# pylint: disable=too-many-locals
+
+
 def store_data_workbook(
     data: dict[RegistrationType, DataFrame],
     filepath: Path,
@@ -68,28 +71,38 @@ def store_data_workbook(
         for registration_type, registration_data in data.items():
 
             sheet_name = repr(registration_type)
-            header = list(map(str, registration_data.keys()))
+            header_text = map(str, registration_data.keys())
+            header = list(
+                map(header_function, header_text)
+                if header_function
+                else header_text
+            )
 
             registration_data.to_excel(
                 writer,
                 index=False,
                 sheet_name=sheet_name,
-                header=(
-                    list(map(header_function, header))
-                    if header_function
-                    else header
-                ),
+                startrow=1,
+                header=False,
             )
             workbook = writer.book
             worksheet = writer.sheets[sheet_name]
             rows, _ = registration_data.shape
 
-            header_format = workbook.add_format({"bold": True})
-            worksheet.set_row(0, cell_format=header_format)
+            header_format = workbook.add_format({
+                "bold": True,
+                "fg_color": "#D7E4BC",
+            })
+            for column, value in enumerate(header):
+                worksheet.write(0, column, value, header_format)
 
-            cell_format = workbook.add_format(
-                {"text_wrap": True, "valign": "top"}
-            )
+            cell_format = workbook.add_format({
+                "text_wrap": True,
+                "valign": "top",
+            })
             for row in range(1, rows + 1):
                 worksheet.set_row(row, cell_format=cell_format)
             writer.sheets[sheet_name].autofit()
+
+
+# pylint: enable=too-many-locals
