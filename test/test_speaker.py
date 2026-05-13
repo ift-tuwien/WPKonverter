@@ -29,7 +29,7 @@ def test_speaker_registration1(checkers):
                 ProgramPoint(["07.10.2026", "Gala Dinner"]),
                 ProgramPoint(["08.10.2026", "Congress Day 2"]),
             ],
-            "Companion": "ja",
+            "Companion": True,
             "Name (Companion)": "Speaker+1 Speaker+1",
             "Organization (Companion)": "Nein",
             "Program Points (Companion)": [],
@@ -52,7 +52,7 @@ def test_speaker_registration2(checkers):
             "Mail Address": "test.speaker@some.company.com",
             "Telephone Number": "+555 123",
             "Program Points": [ProgramPoint(["07.10.2026", "Congress Day 1"])],
-            "Companion": "nein",
+            "Companion": False,
             "Name (Companion)": "Company Asset",
             "Organization (Companion)": "",
             "Program Points (Companion)": [
@@ -81,7 +81,7 @@ def test_speaker_registration3(checkers):
                 ProgramPoint(["07.10.2026", "Gala Dinner"]),
                 ProgramPoint(["08.10.2026", "Congress Day 2"]),
             ],
-            "Companion": "ja",
+            "Companion": True,
             "Name (Companion)": "Test 1 Begleitung",
             "Organization (Companion)": "Test Uni",
             "Program Points (Companion)": [

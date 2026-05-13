@@ -52,7 +52,7 @@ program_points = program_points_start + program_points_text("Program Points")
 # nonsensical choice in this case.
 companion_choice = Optional(Keyword("ja"))
 companion = (companion_start + companion_choice).set_parse_action(
-    lambda tokens: "nein" if len(tokens) <= 0 else tokens[0]
+    lambda tokens: False if len(tokens) <= 0 else tokens[0] == "ja"
 )("Companion")
 companion_name_text = SkipTo(companion_organization_start).set_parse_action(
     strip
