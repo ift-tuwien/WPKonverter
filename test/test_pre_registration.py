@@ -22,7 +22,7 @@ def test_pre_registration1(checkers):
             "Position": "",
             "Mail Address": "stefan.hinterberger@dexis.at",
             "Telephone Number": "06646148120",
-            "Sponsor": "nein",
+            "Sponsor": False,
             "Message": "",
         },
     )
@@ -41,7 +41,7 @@ def test_pre_registration2(checkers):
             "Position": "Entwickler Mechatronik",
             "Mail Address": "ma.leonhartsberger@welser.com",
             "Telephone Number": "",
-            "Sponsor": "nein",
+            "Sponsor": False,
             "Message": "",
         },
     )

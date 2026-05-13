@@ -31,7 +31,9 @@ participant = between(participant_start, organization_start, "Participant")
 contact = contact_mail + Optional(contact_telephone_number).set_parse_action(
     lambda tokens: "" if len(tokens) <= 0 else tokens[0]
 )("Telephone Number")
-sponsor = between(sponsor_start, message_start, "Sponsor")
+sponsor = between(sponsor_start, message_start).set_parse_action(
+    lambda tokens: tokens[0] != "nein"
+)("Sponsor")
 message = between(message_start, footer_start, "Message")
 
 pre_registration = (
