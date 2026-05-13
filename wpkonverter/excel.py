@@ -64,7 +64,7 @@ def get_header_format(
 
     """
 
-    base_format = {"bold": True}
+    base_format = {"bold": True, "bottom": True}
     registration_type_to_header_format = {
         RegistrationType.PRE_REGISTRATION: (
             base_format
