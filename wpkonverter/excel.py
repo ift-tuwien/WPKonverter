@@ -81,7 +81,12 @@ def get_header_format(registration_type: RegistrationType) -> dict[str, Any]:
                 "fg_color": "#F7C28B",
             }
         ),
-        RegistrationType.STUDENT: base_format,
+        RegistrationType.STUDENT: (
+            base_format
+            | {
+                "fg_color": "#8CC0FA",
+            }
+        ),
         RegistrationType.UNKOWN: base_format,
     }
 

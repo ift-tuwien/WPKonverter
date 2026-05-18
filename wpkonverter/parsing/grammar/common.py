@@ -78,11 +78,13 @@ participant_start = Suppress(
 sponsor_start = Suppress(Keyword("Sponsoren:"))
 program_points_start = Suppress(
     Keyword("Ich nehme teil an folgenden Programmpunkten teil:")
+    | Keyword("Veranstaltungen:")
+    | Keyword("Events:")
 )
 
 organization_start = Suppress(Keyword("Unternehmen/ Bildungsinstitut:"))
 position_start = Suppress(Keyword("Position:"))
-contact_start = Suppress(Keyword("Kontakt:"))
+contact_start = Suppress(Keyword("Kontakt:") | Keyword("Contact:"))
 companion_start = Suppress(Keyword("Begleitperson:"))
 companion_organization_start = Suppress(
     Keyword("Unternehmen/Bildungsinstitut (wenn vorhanden):")
@@ -91,7 +93,7 @@ companion_program_points_start = Suppress(
     Keyword("Die Begleitperson nimmt an folgenden Programmpunkten  teil:")
 )
 
-message_start = Suppress(Keyword("Nachricht:"))
+message_start = Suppress(Keyword("Nachricht:") | Keyword("Message:"))
 footer_start = Suppress(Keyword("--"))
 footer = Suppress(
     Keyword(
@@ -162,6 +164,7 @@ companion_data = (
     + companion_program_points
 )
 
+message_until_end = message + footer_start + footer
 contact_until_end = (
-    contact + program_points + companion_data + message + footer_start + footer
+    contact + program_points + companion_data + message_until_end
 )
