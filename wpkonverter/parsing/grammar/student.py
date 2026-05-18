@@ -2,12 +2,12 @@
 
 # -- Imports ------------------------------------------------------------------
 
-from re import search
-
 from pyparsing import Keyword, SkipTo, Suppress
 
 from wpkonverter.parsing.grammar.common import (
     between,
+    billing_address_start,
+    billing_mode,
     contact,
     contact_mail_text,
     from_,
@@ -22,9 +22,6 @@ from wpkonverter.parsing.grammar.common import (
 student_start = Suppress(Keyword("Studierende:") | Keyword("Participant:"))
 university_start_de = Suppress(Keyword("Universitätsname:"))
 university_start_en = Suppress(Keyword("University:"))
-billing_address_start = Suppress(
-    Keyword("Rechnungsadresse:") | Keyword("Billing address:")
-)
 
 subject = between(subject_start, student_start)
 student = student_start + SkipTo("\n")("Student")
@@ -44,9 +41,6 @@ student_info_en = contact + university_en + student_id
 
 billing_address = billing_address_start + SkipTo("\n")("Billing Address")
 vat = SkipTo("\n")("VAT")
-billing_mode = SkipTo("\n").set_parse_action(
-    lambda tokens: "Post" if search(r"[Pp]ost", tokens[0]) else "eMail"
-)("Billing Mode")
 billing_mail = contact_mail_text("Billing Mail Address")
 
 student_registration = (

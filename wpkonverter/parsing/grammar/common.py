@@ -2,6 +2,8 @@
 
 # -- Imports ------------------------------------------------------------------
 
+from re import search
+
 from pyparsing import (
     Combine,
     Keyword,
@@ -10,6 +12,7 @@ from pyparsing import (
     ParserElement,
     ParseResults,
     printables,
+    Regex,
     SkipTo,
     Suppress,
     Word,
@@ -155,6 +158,14 @@ companion_organization = between(
 companion_program_points = (
     Suppress(companion_program_points_start) + Optional(program_points_text)
 )("Program Points (Companion)")
+
+billing_address_start = Suppress(
+    Regex(r"Rechnungsadresse[:*]") | Regex(r"Billing [Aa]ddress[:*]")
+)
+billing_mode = SkipTo("\n").set_parse_action(
+    lambda tokens: "Post" if search(r"[Pp]ost", tokens[0]) else "eMail"
+)("Billing Mode")
+
 message = between(message_start, footer_start, "Message")
 
 companion_data = (

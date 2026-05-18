@@ -68,7 +68,12 @@ def get_header_format(registration_type: RegistrationType) -> dict[str, Any]:
                 "fg_color": "#C6E8E9",
             }
         ),
-        RegistrationType.PARTICIPANT: base_format,
+        RegistrationType.PARTICIPANT: (
+            base_format
+            | {
+                "fg_color": "#D6D6D6",
+            }
+        ),
         RegistrationType.SPEAKER: (
             base_format
             | {

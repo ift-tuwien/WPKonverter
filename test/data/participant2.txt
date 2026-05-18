@@ -1,0 +1,34 @@
+Von: Website WPK2026
+Betreff: TeilnehmerIn Anmeldung WPK2026
+
+Teilnehmerin/Teilnehmer: High Priest Test Participant
+Unternehmen/ Bildungsinstitut: Curch
+Position: Top Mage
+Kontakt:
+iam@mail.me
++55 123
+
+Ich nehme teil an folgenden Programmpunkten teil:
+Thursday 8.10.2026 - Congress Day 2
+
+Begleitperson: via e-mail
+Some [second-name-begleitperson] One
+Unternehmen/Bildungsinstitut (wenn vorhanden): YoYo Institute
+
+Die Begleitperson nimmt an folgenden Programmpunkten  teil:
+Tuesday 6.10.2026 - Come Together
+
+Billing Address:
+/dev/null
+
+VAT number:
+123
+
+Invoice e-mail:
+hiho@mail.at
+
+Nachricht:
+This is test data
+
+--
+This is a notification that a contact form was submitted on your website (Wiener Produktionstechnik-Kongress https://wpk.conf.tuwien.ac.at/en/).
