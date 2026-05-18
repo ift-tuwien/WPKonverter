@@ -16,6 +16,7 @@ from pyparsing import ParserElement, ParseException
 from wpkonverter.parsing.error import generate_error_message
 from wpkonverter.parsing.grammar.pre_registration import pre_registration
 from wpkonverter.parsing.grammar.speaker import speaker_registration
+from wpkonverter.parsing.grammar.sponsor import sponsor_registration
 
 # -- Classes ------------------------------------------------------------------
 
@@ -183,6 +184,7 @@ def get_grammar(registration_type: RegistrationType) -> ParserElement | None:
     type_to_grammar = {
         RegistrationType.PRE_REGISTRATION: pre_registration,
         RegistrationType.SPEAKER: speaker_registration,
+        RegistrationType.SPONSOR: sponsor_registration,
     }
 
     return type_to_grammar.get(registration_type)
