@@ -33,7 +33,7 @@ def generate_error_message(text: str, error: ParseException) -> str:
     line_number = lineno(error.loc, text)
     column_number = col(error.loc, text)
     lines = text.splitlines()
-    quote_symbol = "> "
+    quote_symbol = "┆ "
     error_indent = " " * (len(quote_symbol) + column_number)
 
     error_message: list[str] = []
