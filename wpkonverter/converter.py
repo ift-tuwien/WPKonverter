@@ -82,9 +82,7 @@ def main() -> None:
             f"Unable to determine text encoding of file “{input_filepath}”"
         )
 
-    errors, registration_types, parsing_results = parse_csv_file(
-        input_filepath
-    )
+    info, registration_types, parsing_results = parse_csv_file(input_filepath)
 
     converted = convert_program_points(parsing_results)
     parsed_mails = convert_parse_results_data_frame(
@@ -95,7 +93,12 @@ def main() -> None:
     store_data_workbook(
         parsed_mails, output_filepath, header_function=modify_header_text
     )
-    print(f"Stored data in “{output_filepath}”")
-    if errors > 0:
-        plural = "s" if errors > 1 else ""
-        exit_error(f"Unable to parse {errors} mail{plural}")
+    print(
+        f"Stored data of {info.parsed} successfully parsed "
+        f"mail{'' if info.parsed == 1 else 's'} in “{output_filepath}”"
+    )
+    if info.errors > 0:
+        exit_error(
+            f"Unable to parse {info.errors} "
+            f"mail{'' if info.errors == 1 else 's'}"
+        )

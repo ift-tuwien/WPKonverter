@@ -3,6 +3,7 @@
 # -- Imports ------------------------------------------------------------------
 
 from csv import DictReader
+from dataclasses import dataclass
 from enum import auto, Enum
 from logging import getLogger
 from pathlib import Path
@@ -21,6 +22,15 @@ from wpkonverter.parsing.grammar.sponsor import sponsor_registration
 from wpkonverter.parsing.grammar.student import student_registration
 
 # -- Classes ------------------------------------------------------------------
+
+
+@dataclass
+class ParsingInformation:
+    """Store information about parsing runs"""
+
+    def __init__(self) -> None:
+        self.errors = 0
+        self.parsed = 0
 
 
 class RegistrationType(Enum):
@@ -196,7 +206,7 @@ def get_grammar(registration_type: RegistrationType) -> ParserElement | None:
 
 def parse_csv_file(
     filepath: Path,
-) -> tuple[list[RegistrationType], list[dict[str, Any]]]:
+) -> tuple[ParsingInformation, list[RegistrationType], list[dict[str, Any]]]:
     """Parse CSV mails for registration data
 
     Args:
@@ -209,7 +219,7 @@ def parse_csv_file(
 
         A tuple containing
 
-        - the number of mails that could not be parsed
+        - information about the parsing process
         - two lists of the same length, the first contains registration types
           and the second one the parsed registration data
 
@@ -219,7 +229,7 @@ def parse_csv_file(
 
     registration_types: list[RegistrationType] = []
     parsing_results: list[dict[str, Any]] = []
-    errors = 0
+    info = ParsingInformation()
     with open(filepath, newline="", encoding="utf-8-sig") as csvfile:
         reader = DictReader(csvfile)
 
@@ -240,13 +250,13 @@ def parse_csv_file(
                 parsed = grammar.parse_string(text, parse_all=True)
                 registration_types.append(registration_type)
                 parsing_results.append(parsed.as_dict())
+                info.parsed += 1
             except ParseException as error:
                 print(
                     f"Unable to parse data in mail {mail_number}:\n\n"
                     f"{generate_error_message(text, error)}\n",
                     file=stderr,
                 )
-                errors += 1
-                continue
+                info.errors += 1
 
-    return errors, registration_types, parsing_results
+    return info, registration_types, parsing_results

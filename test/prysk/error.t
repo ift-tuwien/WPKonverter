@@ -18,7 +18,7 @@
   ┆ Speaker+1 Speaker+1
   
   Unable to parse 1 mail
-  Stored data in “../data/error.xlsx”
+  Stored data of 0 successfully parsed mails in “../data/error.xlsx”
   [1]
 
 -- Check Conversion of Unreadable Data -----------------------------------------

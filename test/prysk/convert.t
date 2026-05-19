@@ -6,7 +6,7 @@
 -- Check Conversion of Test Data -----------------------------------------------
 
   $ wpkonverter "${DATADIR}/works.csv"
-  Stored data in “../data/works.xlsx”
+  Stored data of 8 successfully parsed mails in “../data/works.xlsx”
 
 -- Cleanup ---------------------------------------------------------------------
 
