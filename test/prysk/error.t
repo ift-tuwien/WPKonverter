@@ -19,6 +19,12 @@
   
   Stored data in “../data/error.xlsx”
 
+-- Check Conversion of Unreadable Data -----------------------------------------
+
+  $ wpkonverter "${DATADIR}/garbage"
+  Unable to determine text encoding of file “../data/garbage”
+  [1]
+
 -- Cleanup ---------------------------------------------------------------------
 
   $ rm -f "${DATADIR}/error.xlsx"

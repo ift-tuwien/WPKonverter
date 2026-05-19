@@ -6,6 +6,8 @@ from pathlib import Path
 from logging import basicConfig, getLogger
 from sys import exit as sys_exit, stderr
 
+from chardet import UniversalDetector
+
 from wpkonverter.cli import get_arguments
 from wpkonverter.excel import modify_header_text, store_data_workbook
 from wpkonverter.parsing import parse_csv_file
@@ -30,6 +32,31 @@ def exit_error(message: str) -> None:
     sys_exit(1)
 
 
+def determine_encoding(filepath: Path) -> str | None:
+    """Determine the encoding of the given file
+
+    Args:
+
+        filepath:
+
+            The path to the file for which the encoding should be determined
+
+    Returns:
+
+        The encoding of the given file
+
+    """
+
+    detector = UniversalDetector()
+    with open(filepath, "rb") as filedescriptor:
+        for line in filedescriptor:
+            detector.feed(line)
+            if detector.done:
+                break
+    result = detector.close()
+    return result["encoding"]
+
+
 # -- Main ---------------------------------------------------------------------
 
 
@@ -49,10 +76,13 @@ def main() -> None:
 
     input_filepath = Path(arguments.filepath)
 
-    try:
-        registration_types, parsing_results = parse_csv_file(input_filepath)
-    except UnicodeDecodeError as error:
-        exit_error(f"Unable to read file “{input_filepath}”: {error}")
+    encoding = determine_encoding(input_filepath)
+    if encoding is None:
+        exit_error(
+            f"Unable to determine text encoding of file “{input_filepath}”"
+        )
+
+    registration_types, parsing_results = parse_csv_file(input_filepath)
 
     converted = convert_program_points(parsing_results)
     parsed_mails = convert_parse_results_data_frame(

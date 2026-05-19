@@ -15,6 +15,7 @@ classifiers = [
     "Programming Language :: Python",
 ]
 dependencies = [
+    "chardet>=7.4.3",
     "pandas>=3.0.2",
     "pyparsing>=3.3.2",
     "xlsxwriter>=3.2.9",
