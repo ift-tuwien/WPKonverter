@@ -39,7 +39,6 @@ def main() -> None:
     arguments = get_arguments()
 
     basicConfig(
-        encoding="utf-8",
         format="{asctime} {levelname:7} {message}",
         level=arguments.log.upper(),
         style="{",

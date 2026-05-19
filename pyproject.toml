@@ -33,8 +33,7 @@ version = "0.0.3"
 [project.optional-dependencies]
 dev = [
     "Flake8-pyproject>=1.2.3",
-    # mypy 1.20 reports a false positive about an overload of basicConfig
-    "mypy>=1.19,<1.20",
+    "mypy>=2.1.0",
     "myst-parser>=5",
     "pydoclint[flake8]>=0.8.4",
     "pylint>=4.0.5",
