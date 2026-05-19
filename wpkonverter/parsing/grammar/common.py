@@ -103,10 +103,7 @@ footer = Suppress(
         "This is a notification that a contact form was submitted on your"
         " website (Wiener Produktionstechnik-Kongress"
     )
-    + (
-        Keyword("https://wpk.conf.tuwien.ac.at/en/).")
-        | Keyword("https://wpk.conf.tuwien.ac.at).")
-    )
+    + Regex(r"https://wpk\.conf\.tuwien\.ac\.at(?:/en/)?\)\.")
 )
 
 # =================
