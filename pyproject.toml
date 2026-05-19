@@ -36,8 +36,9 @@ dev = [
     "mypy>=2.1.0",
     "myst-parser>=5",
     "pydoclint[flake8]>=0.8.4",
+    "prysk[pytest-plugin]>=0.20.0",
     "pylint>=4.0.5",
-    "pytest>=9",
+    "pytest",
     "pytest-sugar>=1.1.1",
     "sphinx>=9.1.0,<10",
     "sphinx-pyproject>=0.3",
@@ -81,11 +82,6 @@ ignore_missing_imports = true
 [tool.pylint]
 ignore-paths = [ ".venv/.*$" ]
 
-[tool.pytest]
-addopts = [
-  "--doctest-modules",
-  "--verbose",
-]
-testpaths = [
-  "test/pytest"
-]
+[tool.pytest.ini_options]
+addopts = "--doctest-modules --verbose"
+testpaths = "test/pytest"
