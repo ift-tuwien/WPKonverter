@@ -12,6 +12,8 @@ input := "wpk.CSV"
 sphinx_directory := "sphinx"
 sphinx_input_directory := "doc/sphinx"
 
+export PYTEST_ADDOPTS := if os() == "windows" { "-p no:prysk" } else { "" }
+
 # -- Recipes -------------------------------------------------------------------
 
 # Setup Python environment
