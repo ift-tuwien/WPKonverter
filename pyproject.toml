@@ -39,6 +39,7 @@ dev = [
     "pydoclint[flake8]>=0.8.4",
     "pylint>=4.0.5",
     "pytest>=9",
+    "pytest-sugar>=1.1.1",
     "sphinx>=9.1.0,<10",
     "sphinx-pyproject>=0.3",
     "sphinx_rtd_theme",
