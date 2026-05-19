@@ -36,6 +36,7 @@ dev = [
     # mypy 1.20 reports a false positive about an overload of basicConfig
     "mypy>=1.19,<1.20",
     "myst-parser>=5",
+    "pydoclint[flake8]>=0.8.4",
     "pylint>=4.0.5",
     "pytest>=9",
     "sphinx>=9.1.0,<10",

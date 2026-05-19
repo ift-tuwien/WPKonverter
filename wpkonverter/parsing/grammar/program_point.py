@@ -23,19 +23,17 @@ from wpkonverter.parsing.grammar.util import strip
 
 
 class ProgramPoint:
-    """Store data about a single WPK program point"""
+    """Store data about a single WPK program point
+
+    Args:
+
+        tokens:
+
+            The parsing tokens used to construct the program point
+
+    """
 
     def __init__(self, tokens):
-        """Initialize the program point with the given tokens
-
-        Args:
-
-            tokens:
-
-                The parsing tokens used to construct the program point
-
-        """
-
         self.date = (
             tokens[0]
             if isinstance(tokens[0], datetime)
