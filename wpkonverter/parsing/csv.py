@@ -207,8 +207,11 @@ def parse_csv_file(
 
     Returns:
 
-        A tuple containing two lists of the same length, the first contains
-        registration types and the second one the parsed registration data
+        A tuple containing
+
+        - the number of mails that could not be parsed
+        - two lists of the same length, the first contains registration types
+          and the second one the parsed registration data
 
     """
 
@@ -216,6 +219,7 @@ def parse_csv_file(
 
     registration_types: list[RegistrationType] = []
     parsing_results: list[dict[str, Any]] = []
+    errors = 0
     with open(filepath, newline="", encoding="utf-8-sig") as csvfile:
         reader = DictReader(csvfile)
 
@@ -242,6 +246,7 @@ def parse_csv_file(
                     f"{generate_error_message(text, error)}\n",
                     file=stderr,
                 )
+                errors += 1
                 continue
 
-    return registration_types, parsing_results
+    return errors, registration_types, parsing_results

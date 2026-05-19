@@ -5,7 +5,7 @@
 
 -- Check Conversion of Data Containing Error -----------------------------------
 
-  $ wpkonverter "${DATADIR}/error.csv"
+  $ wpkonverter "${DATADIR}/error.csv" 2>&1
   Unable to parse data in mail 1:
   
   ┆ 
@@ -17,7 +17,9 @@
      Expected Keyword 'Begleitperson:', found 'Begleitperson'  \(at char \d+\), \(line:16, col:1\) (re)
   ┆ Speaker+1 Speaker+1
   
+  Unable to parse 1 mail
   Stored data in “../data/error.xlsx”
+  [1]
 
 -- Check Conversion of Unreadable Data -----------------------------------------
 

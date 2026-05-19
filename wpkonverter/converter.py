@@ -82,7 +82,9 @@ def main() -> None:
             f"Unable to determine text encoding of file “{input_filepath}”"
         )
 
-    registration_types, parsing_results = parse_csv_file(input_filepath)
+    errors, registration_types, parsing_results = parse_csv_file(
+        input_filepath
+    )
 
     converted = convert_program_points(parsing_results)
     parsed_mails = convert_parse_results_data_frame(
@@ -94,3 +96,6 @@ def main() -> None:
         parsed_mails, output_filepath, header_function=modify_header_text
     )
     print(f"Stored data in “{output_filepath}”")
+    if errors > 0:
+        plural = "s" if errors > 1 else ""
+        exit_error(f"Unable to parse {errors} mail{plural}")
