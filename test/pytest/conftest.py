@@ -19,7 +19,7 @@ class Checkers:
 
     @staticmethod
     def check_grammar(
-        grammar: ParserElement, filepath: Path, expected: dict[str, Any]
+        grammar: ParserElement, filename: str, expected: dict[str, Any]
     ) -> None:
         """Check if parsing a file results in the expected result
 
@@ -38,6 +38,8 @@ class Checkers:
                 The expected result of the parsing process
 
         """
+
+        filepath = Path(__file__).parent.parent / "data" / filename
 
         with open(filepath, encoding="utf-8") as file_content:
             text = file_content.read()

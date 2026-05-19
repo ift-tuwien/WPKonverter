@@ -2,8 +2,6 @@
 
 # -- Imports ------------------------------------------------------------------
 
-from pathlib import Path
-
 from wpkonverter.parsing.grammar.sponsor import sponsor_registration
 from wpkonverter.parsing.grammar.program_point import ProgramPoint
 
@@ -13,10 +11,9 @@ from wpkonverter.parsing.grammar.program_point import ProgramPoint
 def test_sponsor_registration1(checkers):
     """Try to parse first sponsor registration data example"""
 
-    filepath = Path(__file__).parent / "data" / "sponsor1.txt"
     checkers.check_grammar(
         sponsor_registration,
-        filepath,
+        "sponsor1.txt",
         {
             "Sponsor": "Test Sponsor",
             "Organization": "Some Company",

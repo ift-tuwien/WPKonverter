@@ -2,8 +2,6 @@
 
 # -- Imports ------------------------------------------------------------------
 
-from pathlib import Path
-
 from wpkonverter.parsing.grammar.program_point import ProgramPoint
 from wpkonverter.parsing.grammar.participant import participant_registration
 
@@ -13,10 +11,9 @@ from wpkonverter.parsing.grammar.participant import participant_registration
 def test_participant_registration1(checkers):
     """Try to parse first participant registration data example"""
 
-    filepath = Path(__file__).parent / "data" / "participant1.txt"
     checkers.check_grammar(
         participant_registration,
-        filepath,
+        "participant1.txt",
         {
             "Participant": "Teilnehmer DE",
             "Title": "MSc",
@@ -61,10 +58,9 @@ def test_participant_registration1(checkers):
 def test_participant_registration2(checkers):
     """Try to parse second participant registration data example"""
 
-    filepath = Path(__file__).parent / "data" / "participant2.txt"
     checkers.check_grammar(
         participant_registration,
-        filepath,
+        "participant2.txt",
         {
             "Participant": "High Priest Test Participant",
             "Title": "",

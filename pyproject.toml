@@ -87,5 +87,5 @@ addopts = [
   "--verbose",
 ]
 testpaths = [
-  "test"
+  "test/pytest"
 ]

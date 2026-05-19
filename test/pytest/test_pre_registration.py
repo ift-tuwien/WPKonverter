@@ -2,8 +2,6 @@
 
 # -- Imports ------------------------------------------------------------------
 
-from pathlib import Path
-
 from wpkonverter.parsing.grammar.pre_registration import pre_registration
 
 # -- Tests --------------------------------------------------------------------
@@ -12,10 +10,9 @@ from wpkonverter.parsing.grammar.pre_registration import pre_registration
 def test_pre_registration1(checkers):
     """Check first example of pre-registration data"""
 
-    filepath = Path(__file__).parent / "data" / "pre-registration1.txt"
     checkers.check_grammar(
         pre_registration,
-        filepath,
+        "pre-registration1.txt",
         {
             "Participant": "Stefan Hinterberger",
             "Organization": "DEXIS Austria GmbH",
@@ -31,10 +28,9 @@ def test_pre_registration1(checkers):
 def test_pre_registration2(checkers):
     """Check second example for pre-registration data"""
 
-    filepath = Path(__file__).parent / "data" / "pre-registration2.txt"
     checkers.check_grammar(
         pre_registration,
-        filepath,
+        "pre-registration2.txt",
         {
             "Participant": "Martin Leonhartsberger",
             "Organization": "Welser Profile",
